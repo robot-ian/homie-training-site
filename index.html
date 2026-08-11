@@ -66,7 +66,8 @@ h1,h2,h3,.u{font-family:var(--display);letter-spacing:-.01em}
    SHELL
    ============================================================ */
 .shell{max-width:var(--maxw);margin:0 auto;padding:0 var(--gap) 96px;display:grid;gap:clamp(24px,4vw,56px);grid-template-columns:1fr}
-@media(min-width:960px){.shell{grid-template-columns:270px 1fr;align-items:start;padding-top:44px}}
+@media(min-width:960px){.shell{grid-template-columns:270px 1fr;align-items:start;padding-top:44px}
+.shell.is-solo{grid-template-columns:minmax(0,1fr)}}
 
 /* ============================================================
    CHECKLIST RAIL  — the signature element
@@ -189,7 +190,7 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
 /* ============================================================
    GATE / INTRO / CERTIFICATE
    ============================================================ */
-.card{background:var(--panel);border:1px solid var(--rule);padding:clamp(24px,4vw,46px);max-width:60ch}
+.card{background:var(--panel);border:1px solid var(--rule);padding:clamp(24px,4vw,46px);max-width:60ch;width:100%}
 .field{display:block;margin:22px 0 8px}
 .field input{
   width:100%;max-width:340px;padding:11px 13px;border:1px solid var(--rule);
@@ -1239,8 +1240,14 @@ function paintMeter(){
 }
 function paintRail(){
   const rail = document.getElementById('rail');
-  if(!S.name){ rail.classList.add('hidden'); return; }
+  const shell = document.querySelector('.shell');
+  if(!S.name){
+    rail.classList.add('hidden');
+    if(shell) shell.classList.add('is-solo');
+    return;
+  }
   rail.classList.remove('hidden');
+  if(shell) shell.classList.remove('is-solo');
   const list = document.getElementById('railList');
   list.innerHTML = '';
   MODULES.forEach((m,i) => {
