@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field Operations Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --paper:#EEF1F4;
+  --panel:#FFFFFF;
+  --ink:#0F1E2E;
+  --ink-soft:#4A5C6E;
+  --rule:#C7D0D9;
+  --signal:#2B5FD9;   /* active / in progress */
+  --amber:#B5791A;    /* locked / pending */
+  --clear:#1B7A5A;    /* cleared / passed */
+  --alert:#B4342B;    /* incorrect */
+
+  --display:'Archivo',system-ui,sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --gap:clamp(16px,3vw,32px);
+  --maxw:1180px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.65;
+}
+h1,h2,h3,.u{font-family:var(--display);letter-spacing:-.01em}
+.u{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+
+/* ============================================================
+   MASTHEAD
+   ============================================================ */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--panel);
+  position:sticky;top:0;z-index:40;
+}
+.masthead__in{
+  max-width:var(--maxw);margin:0 auto;padding:14px var(--gap);
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.mark{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.02em}
+.mark span{color:var(--ink-soft);font-weight:500}
+.meter{margin-left:auto;display:flex;align-items:center;gap:12px}
+.meter__track{width:clamp(80px,18vw,200px);height:4px;background:var(--rule);position:relative;overflow:hidden}
+.meter__fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--clear);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.meter__num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+.shell{max-width:var(--maxw);margin:0 auto;padding:0 var(--gap) 96px;display:grid;gap:clamp(24px,4vw,56px);grid-template-columns:1fr}
+@media(min-width:960px){.shell{grid-template-columns:270px 1fr;align-items:start;padding-top:44px}}
+
+/* ============================================================
+   CHECKLIST RAIL  — the signature element
+   ============================================================ */
+.rail{padding-top:28px}
+@media(min-width:960px){.rail{position:sticky;top:96px;padding-top:0}}
+.rail__title{margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--rule);color:var(--ink-soft)}
+.rail__list{list-style:none;margin:0;padding:0}
+.rung{
+  display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:baseline;
+  width:100%;text-align:left;border:0;background:none;cursor:pointer;
+  padding:11px 0;border-bottom:1px solid rgba(199,208,217,.55);
+  font-family:var(--display);font-size:14px;font-weight:500;color:var(--ink-soft);
+}
+.rung:disabled{cursor:not-allowed}
+.rung__no{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em}
+.rung__state{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;margin-top:3px}
+.rung[data-s="locked"]{opacity:.5}
+.rung[data-s="locked"] .rung__state{color:var(--amber)}
+.rung[data-s="active"]{color:var(--ink)}
+.rung[data-s="active"] .rung__no,.rung[data-s="active"] .rung__state{color:var(--signal)}
+.rung[data-s="cleared"] .rung__no,.rung[data-s="cleared"] .rung__state{color:var(--clear)}
+.rung.is-open{color:var(--ink);font-weight:600}
+.rung:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+
+/* ============================================================
+   STAGE
+   ============================================================ */
+.stage{padding-top:28px;min-width:0}
+@media(min-width:960px){.stage{padding-top:0}}
+.eyebrow{color:var(--ink-soft);margin-bottom:10px}
+.stage h1{font-size:clamp(28px,4.4vw,44px);line-height:1.1;margin:0 0 18px;font-weight:700}
+.lede{font-size:19px;color:var(--ink-soft);margin:0 0 28px;max-width:62ch}
+.prose{max-width:66ch}
+.prose h2{
+  font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.02em;
+  margin:52px 0 22px;padding-top:22px;border-top:2px solid var(--ink);
+}
+.prose h2:first-child{margin-top:0;padding-top:0;border-top:0}
+.prose h3{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--signal);
+  margin:38px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--rule);
+}
+.prose h3:first-child{margin-top:0}
+.prose h4{
+  font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.01em;
+  margin:26px 0 8px;
+}
+.prose p{margin:0 0 18px}
+.prose em{font-family:var(--display);font-style:normal;font-weight:600;font-size:18px;letter-spacing:-.01em}
+.prose ul{margin:0 0 18px;padding-left:20px}
+.prose li{margin-bottom:8px}
+.prose strong{font-weight:600}
+.prose code{font-family:var(--mono);font-size:14px;background:rgba(43,95,217,.08);padding:2px 6px;border:1px solid var(--rule)}
+
+.fig{margin:0 0 26px;max-width:66ch}
+.fig img,.fig video{width:100%;height:auto;display:block;border:1px solid var(--rule);background:var(--ink)}
+.fig figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-soft);margin-top:8px}
+.fig--portrait{max-width:340px}
+.fig--portrait iframe{width:100%;aspect-ratio:9/16;border:1px solid var(--rule);display:block}
+.looms{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 26px;max-width:66ch}
+.looms__lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-right:2px}
+.looms__lab:not(:first-child){margin-left:10px}
+.looms a{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-decoration:none;
+  color:var(--signal);border:1px solid var(--rule);padding:5px 10px;background:var(--panel);
+}
+.looms a:hover{border-color:var(--signal)}
+.warn{border-left:3px solid var(--alert);background:rgba(180,52,43,.05);padding:18px 20px;margin:0 0 26px;max-width:66ch}
+.warn p{margin:0 0 10px}
+.warn p:last-child{margin-bottom:0}
+.frame{position:relative;padding-top:56.25%;background:var(--ink);margin:0 0 30px;border:1px solid var(--rule)}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.divider{height:1px;background:var(--rule);margin:38px 0;border:0}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.handoff{
+  display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--signal);
+  padding:22px 24px;max-width:66ch;
+}
+.handoff .note{max-width:42ch}
+
+.quiz{background:var(--panel);border:1px solid var(--rule);padding:clamp(20px,3.4vw,34px);max-width:66ch}
+.quiz__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px;color:var(--ink-soft)}
+.quiz h2{font-size:22px;margin:0 0 26px;font-weight:600}
+.q{margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid rgba(199,208,217,.6)}
+.q:last-of-type{border-bottom:0}
+.q__text{font-weight:600;margin:0 0 14px;font-family:var(--display);font-size:16px;line-height:1.45}
+.opt{display:flex;gap:11px;align-items:flex-start;padding:9px 11px;margin:0 0 5px;cursor:pointer;border:1px solid transparent;font-size:16px;line-height:1.45}
+.opt:hover{background:rgba(43,95,217,.05)}
+.opt input{margin:5px 0 0;accent-color:var(--signal);flex:none}
+.opt.ok{border-color:var(--clear);background:rgba(27,122,90,.07)}
+.opt.no{border-color:var(--alert);background:rgba(180,52,43,.06)}
+.flag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-left:auto;padding-left:10px;flex:none}
+.opt.ok .flag{color:var(--clear)}
+.opt.no .flag{color:var(--alert)}
+
+.btn{
+  font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.01em;
+  padding:12px 24px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  cursor:pointer;transition:opacity .15s;
+}
+.btn:hover{opacity:.85}
+.btn:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.btn--ghost{background:none;color:var(--ink)}
+a.btn{display:inline-block;text-decoration:none;line-height:1.2}
+.btn--go{background:var(--clear);border-color:var(--clear);color:#fff}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
+
+.verdict{margin-top:20px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.6;letter-spacing:.02em;border-left:3px solid}
+.verdict[data-v="pass"]{border-color:var(--clear);background:rgba(27,122,90,.07);color:var(--clear)}
+.verdict[data-v="fail"]{border-color:var(--alert);background:rgba(180,52,43,.06);color:var(--alert)}
+
+/* ============================================================
+   GATE / INTRO / CERTIFICATE
+   ============================================================ */
+.card{background:var(--panel);border:1px solid var(--rule);padding:clamp(24px,4vw,46px);max-width:60ch}
+.field{display:block;margin:22px 0 8px}
+.field input{
+  width:100%;max-width:340px;padding:11px 13px;border:1px solid var(--rule);
+  background:var(--paper);font-family:var(--body);font-size:17px;color:var(--ink);
+}
+.field input:focus{outline:2px solid var(--signal);outline-offset:1px}
+.note{font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--ink-soft);letter-spacing:.02em}
+
+.cert{border:2px solid var(--ink);padding:clamp(28px,5vw,58px);background:var(--panel);text-align:center;max-width:62ch}
+.cert__seal{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.cert__name{font-family:var(--display);font-size:clamp(26px,5vw,40px);font-weight:700;margin:22px 0 6px;line-height:1.15}
+.cert__line{width:70px;height:2px;background:var(--ink);margin:22px auto}
+.cert__meta{font-family:var(--mono);font-size:12px;line-height:2;color:var(--ink-soft);letter-spacing:.04em}
+.cert__code{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.18em;color:var(--ink);margin-top:4px}
+
+.hidden{display:none !important}
+
+@media print{
+  .masthead,.rail,.noprint{display:none !important}
+  body{background:#fff}
+  .shell{display:block;padding:0}
+  .cert{border-color:#000;max-width:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     CONTENT — everything you edit lives in the CONFIG block below.
+     Scroll to the bottom of this file. You do not need to touch
+     anything above it.
+     ================================================================ -->
+
+<header class="masthead">
+  <div class="masthead__in">
+    <div class="mark">FRODOBOTS <span>/ Field Operations Onboarding</span></div>
+    <div class="meter">
+      <span class="u meter__num" id="meterNum">0 / 0</span>
+      <div class="meter__track"><div class="meter__fill" id="meterFill"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="rail hidden" id="rail" aria-label="Module checklist">
+    <div class="u rail__title">Checklist</div>
+    <ul class="rail__list" id="railList"></ul>
+  </nav>
+  <main class="stage" id="stage"></main>
+</div>
+
+<script>
+/* ==================================================================
+   ██  CONFIG  ██  — EDIT FROM HERE DOWN
+   ==================================================================
+
+   Adding a module: copy one { ... } block, paste it, change the text.
+   Removing one: delete the whole { ... } block including its comma.
+   Order in this list = order trainees must complete it in.
+
+   video:  the YouTube ID only — the part after "v=" in the URL.
+           https://www.youtube.com/watch?v=dQw4w9WgXcQ  ->  "dQw4w9WgXcQ"
+           Leave as ""  for a text-only module.
+   answer: which option is correct, counting from 0.
+           First option = 0, second = 1, third = 2, fourth = 3.
+   ================================================================== */
+
+const PASS_MARK = 1.0;   // 1.0 = must get every question right. 0.8 = 80%.
+
+const MODULES = [
+  {
+    title: "The mission, the vocabulary, and how you're measured",
+    lede: "Before you touch a controller, you need the shape of the job and the words the team uses to describe it.",
+    video: "",
+    body: `
+      <h3>What we do</h3>
+      <p><strong>We collect the data that teaches humanoid robots how to live in the real world.</strong></p>
+      <p>Most robotics data comes from labs — controlled lighting, flat floors, no surprises. That data
+      produces robots that work beautifully in labs. We do the opposite. We put Homie into real
+      environments and capture what actually happens there.</p>
+      <p>That started in homes: real clutter, real staircases, real inconsistent lighting. We're now
+      expanding into public environments, which adds a harder layer — moving crowds, unpredictable
+      obstacles, bystanders who didn't ask to be part of a collection session, and spaces where you
+      don't control who walks through the frame.</p>
+      <p>Both settings matter, and they teach different things. Homes teach a robot to work in confined,
+      personal, object-dense space. Public environments teach it scale, movement, and people it hasn't
+      met. A humanoid that can only handle one of those isn't much use.</p>
+      <p>We're pioneers in teleoperation for humanoid data collection in natural settings. The datasets
+      we build now are what future research is built on top of. The work is early, which means the
+      standard you hold yourself to matters more than usual — there is no large existing dataset to
+      average out your mistakes.</p>
+
+      <h3>Four things define the job</h3>
+      <ul>
+        <li><strong>Collect high quality data.</strong> A technically clean session — correct calibration,
+        complete metadata, no drift.</li>
+        <li><strong>Collect diverse data.</strong> Different homes, layouts, public settings, crowd
+        densities, lighting. Variety is the point, not a bonus.</li>
+        <li><strong>Protect your robot.</strong> Homie is expensive, fragile, and irreplaceable on a
+        schedule — and in public, more exposed.</li>
+        <li><strong>Respect the environment.</strong> Whether it's someone's living room or a shared
+        public space, you leave it as you found it.</li>
+      </ul>
+      <p><em>Real places, real data, handled with care.</em></p>
+      <p>One line to carry with you: <strong>Homie learns from how you move it.</strong> You are not
+      operating a machine — you are demonstrating what a body does in a room.</p>
+
+      <h3>Who's involved</h3>
+      <ul>
+        <li><strong>Agent</strong> — you, the operator running the session</li>
+        <li><strong>Homie</strong> — the humanoid robot</li>
+        <li><strong>Homeowner</strong> — the owner of the home you are collecting data in</li>
+        <li><strong>Venue Contact</strong> — the equivalent in a public environment: the venue or
+        property manager responsible for the space, whose permission you need before collection begins</li>
+      </ul>
+
+      <h3>What you touch</h3>
+      <ul>
+        <li><strong>Controller</strong> — Homie's startup controller device</li>
+        <li><strong>VR</strong> — the headset you wear to control Homie during collection</li>
+        <li><strong>Motion sensor</strong> — the VR motion sensor worn on your leg, tracking your
+        lower-body movement so Homie moves as you do</li>
+      </ul>
+
+      <h3>Where you work</h3>
+      <p>Five platforms, each with one job. Learn which is which now — confusing them mid-session
+      costs you time you don't have.</p>
+      <ul>
+        <li><strong>Unitree App</strong> — starts the robot's initial program</li>
+        <li><strong>Homie Site</strong> — activates the VR program, enables debug mode, checks datasets</li>
+        <li><strong>VR Site</strong> — activates VR control</li>
+        <li><strong>Homie Dashboard</strong> — your progress and personal KPI</li>
+        <li><strong>Service tab</strong> — restarts the gripper, wrist, or head camera. Inside the Unitree
+        App the same screen is labelled <strong>Service Status</strong> — same place, two names</li>
+      </ul>
+
+      <h3>Two things you'll be asked about</h3>
+      <ul>
+        <li><strong>Debug Mode</strong> — lets the tech team monitor and troubleshoot remotely</li>
+        <li><strong>Dataset</strong> — how you verify data is uploading correctly</li>
+      </ul>
+
+      <h3>How your work is measured</h3>
+      <p>Three numbers, not one:</p>
+      <ul>
+        <li><strong>Hours</strong> — how much data you collect.</li>
+        <li><strong>Failure rate</strong> — what went wrong. Dropped objects, or Homie sitting idle.</li>
+        <li><strong>Behaviour rate</strong> — whether Homie moved the way a body should.</li>
+      </ul>
+      <p>Three measures means there's no shortcut. Rush and your failure rate rises. Over-polish and
+      your hours fall. A later module covers each in detail — for now, know they exist, and know
+      they pull against each other.</p>`,
+    quiz: [
+      {
+        q: "What makes our data valuable compared to lab-collected robotics data?",
+        options: [
+          "It's captured at higher resolution",
+          "It's collected in real, uncontrolled home and public environments",
+          "It's collected in greater volume",
+          "It's reviewed by more researchers"
+        ],
+        answer: 1,
+        why: "The setting is the product. Clean lab data already exists in quantity — real, messy environments are what we add."
+      },
+      {
+        q: "Your gripper stops responding mid-session. Which platform do you go to first?",
+        options: ["Unitree App", "Service tab", "VR Site", "Homie Dashboard"],
+        answer: 1,
+        why: "The Service tab restarts the gripper, wrist, and head camera. In the Unitree App it appears as Service Status."
+      },
+      {
+        q: "The tech team messages you asking to look at a problem remotely. What do you need to enable, and where?",
+        options: [
+          "Debug Mode, on the Homie Site",
+          "Debug Mode, on the VR Site",
+          "Service Status, on the Unitree App",
+          "Dataset, on the Unitree App"
+        ],
+        answer: 0,
+        why: "Debug Mode is what lets the tech team monitor and troubleshoot, and it's enabled from the Homie Site."
+      },
+      {
+        q: "You want to check whether your last session actually uploaded. What are you looking at?",
+        options: [
+          "The Unitree App",
+          "Your Homie Dashboard",
+          "The Dataset on the Homie Site",
+          "The Service tab"
+        ],
+        answer: 2,
+        why: "Dataset is the upload check. The Homie Dashboard shows your progress and KPI, not whether a specific session landed."
+      },
+      {
+        q: "How is your work measured?",
+        options: [
+          "Total hours of data collected",
+          "Hours collected, and how much of it was clean",
+          "Hours collected, failure rate, and behaviour rate",
+          "Failure rate and behaviour rate, reviewed by the tech team"
+        ],
+        answer: 2,
+        why: "Three measures. Hours alone doesn't count — and neither does clean data with unnatural movement in it."
+      }
+    ]
+  },
+  {
+    title: "Your Homie: knowing the machine you operate",
+    lede: "The G1 hardware — what it can do, what powers it, what sees, and what breaks.",
+    video: "",
+    body: `
+      <figure class="fig">
+        <img src="assets/homie-legs.png" alt="Homie, the Unitree G1 humanoid robot">
+      </figure>
+
+      <h3>What Homie is</h3>
+      <p>The Homie you'll be operating is a <strong>Unitree G1</strong>. Three numbers shape how you
+      work with it:</p>
+      <ul>
+        <li><strong>About 35 kg.</strong> This is not a machine you catch if it falls, and not one you
+        lift casually or alone.</li>
+        <li><strong>23 degrees of freedom</strong> in the base configuration — the number of independent
+        joints it can move. That's what lets it copy a human body rather than approximate one.</li>
+        <li><strong>Around 1.5 hours of runtime per battery.</strong> This is the number that shapes your
+        session planning. Know where you are in the charge before you start something long.</li>
+      </ul>
+
+      <h3>Battery and charging</h3>
+      <p><strong>To turn Homie on:</strong> push the battery into the bot until you hear a click. Then
+      press once and release. Then press again, hold for two seconds, and release. The lights turn green.</p>
+      <p>It's a specific sequence — click, short press, long press — and it exists to stop the robot
+      powering up accidentally. If nothing happens, start the sequence again rather than holding the
+      button down.</p>
+      <figure class="fig">
+        <img src="assets/battery-lights.jpg" alt="Battery mounted in Homie's torso showing green charge lights">
+        <figcaption>Green lights confirm the robot is powered on.</figcaption>
+      </figure>
+      <p><strong>To remove the battery:</strong> press the two square catches until you hear a click, then
+      pull the battery out and charge it with the charger.</p>
+      <figure class="fig">
+        <video controls preload="metadata" playsinline src="assets/battery-removal.mp4"></video>
+        <figcaption>Releasing and removing the battery.</figcaption>
+      </figure>
+      <p><strong>Reading the charger:</strong> a red light means it's charging. A green light means it's
+      fully charged. Red is not "ready" — a battery on red will not give you a full session.</p>
+
+      <h3>The cameras</h3>
+      <p>Three cameras collect your data. If one isn't working, the session isn't capturing what it
+      should, so knowing which is which matters when you're troubleshooting.</p>
+      <figure class="fig">
+        <img src="assets/wrist-camera.jpg" alt="Wrist camera mounted on Homie's arm">
+        <figcaption>Wrist camera.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/head-camera.jpg" alt="Head camera mounted on Homie's head">
+        <figcaption>Head camera.</figcaption>
+      </figure>
+      <p>All of these parts are bound to the robot with a <strong>3D print</strong> — a custom mount
+      rather than a factory fitting.</p>
+      <figure class="fig">
+        <img src="assets/3d-print-mounts.jpg" alt="3D printed mount holding a camera to the robot">
+      </figure>
+      <p>They connect to the bot through a <strong>hub port</strong>.</p>
+      <figure class="fig">
+        <img src="assets/hub-port.jpg" alt="Hub port on the robot where camera cables connect">
+      </figure>
+      <figure class="fig">
+        <img src="assets/wrist-camera-wires.jpg" alt="Wrist camera wiring routed along the arm">
+        <figcaption>Wrist camera wires.</figcaption>
+      </figure>
+
+      <h3>The port</h3>
+      <p>The port is where everything plugs in: the hub itself, the power for the hub, and the LAN
+      cables. If a camera or the hub isn't being detected, this panel is where you look.</p>
+      <figure class="fig">
+        <img src="assets/port-panel.jpg" alt="Robot port panel showing BAT, 24V and 12V power terminals, two LAN sockets and USB-C ports">
+        <figcaption>Power terminals on the left, LAN sockets in the centre, USB-C on the right.</figcaption>
+      </figure>
+      <p>Learn what a correctly connected panel looks like now, while nothing is wrong. Spotting a
+      cable that has worked loose is much easier when you know what it should look like.</p>
+      <div class="warn">
+        <p><strong>Power off the robot before touching the marked terminals.</strong> The BAT / 24V /
+        12V terminals outlined below are the power side of the panel. Anything you disconnect there
+        has to be disconnected with Homie off — pulling it live can shock you and can damage the robot.</p>
+        <p>The <strong>USB side is different</strong>. Those you can plug and unplug with the robot
+        still running. The rule to carry: USB, hot. Power terminals, off first.</p>
+        <figure class="fig" style="margin:16px 0 0">
+          <img src="assets/port-power-terminal.jpg" alt="Port panel with the BAT, 24V and 12V power terminals outlined in red">
+          <figcaption>Power off before disconnecting anything inside the red box.</figcaption>
+        </figure>
+      </div>
+
+      <h3>The grippers</h3>
+      <p>The default G1 ships with three-finger hands. We replaced them with <strong>grippers</strong>,
+      which we've found more useful and capable across a wider range of tasks.</p>
+      <figure class="fig">
+        <img src="assets/gripper.jpg" alt="Gripper fitted to Homie in place of the standard hand">
+      </figure>
+      <figure class="fig">
+        <video controls preload="metadata" playsinline src="assets/gripper-in-action.mp4"></video>
+        <figcaption>The gripper opening and closing.</figcaption>
+      </figure>
+      <p>The gripper runs off an external controller attached to the hub and the robot.</p>
+      <figure class="fig">
+        <img src="assets/gripper-controller.jpg" alt="External controller that drives the gripper">
+      </figure>
+      <div class="warn">
+        <p><strong>The gripper breaks easily. Protect it.</strong> It's the most fragile part of the
+        robot you'll interact with regularly, and it's the part doing the work in most captures.</p>
+        <p><strong>You will need to unplug the gripper cable yourself.</strong> Disconnecting and
+        reconnecting the gripper is part of normal handling, and so is the USB side of the port panel —
+        both can be done with Homie running. The power terminals are the exception: those come out
+        only with the robot switched off.</p>
+      </div>
+      <figure class="fig">
+        <img src="assets/gripper-wire.jpg" alt="Gripper cable running to the controller">
+        <figcaption>Gripper wire.</figcaption>
+      </figure>`,
+    quiz: [
+      {
+        q: "You've pushed the battery in and heard the click, but Homie hasn't powered on. What's the correct sequence from there?",
+        options: [
+          "Hold the button down until the lights turn green",
+          "Press once and release, then press again and hold for two seconds",
+          "Press and hold for two seconds, then press once more",
+          "Remove the battery and reseat it until the lights come on"
+        ],
+        answer: 1,
+        why: "Click, short press, long press. Holding the button down isn't the same thing and won't start it."
+      },
+      {
+        q: "You're about to start a session and the charger light on your battery is still red. What does that tell you?",
+        options: [
+          "It's fully charged and ready",
+          "It's still charging and won't give you a full session",
+          "It has a fault and should be swapped",
+          "It's charged but hasn't been disconnected yet"
+        ],
+        answer: 1,
+        why: "Red is charging, green is full. Starting on a red battery means running out partway through."
+      },
+      {
+        q: "Roughly how long does one battery run for, and why does that number matter to you?",
+        options: [
+          "About 30 minutes — plan for frequent swaps mid-task",
+          "About 1.5 hours — it sets how much you can plan into one session",
+          "About 3 hours — long enough that it rarely affects planning",
+          "It varies too much to plan around"
+        ],
+        answer: 1,
+        why: "Around 1.5 hours per battery. Knowing where you are in the charge is part of planning a session, not an afterthought."
+      },
+      {
+        q: "Homie is running and you need to disconnect the gripper cable. What's the right move?",
+        options: [
+          "Disconnect it — the gripper cable doesn't require powering down",
+          "Power the robot off first, as with any cable on the robot",
+          "Leave it — agents don't handle gripper cables at all",
+          "Disconnect it only if the gripper has stopped responding"
+        ],
+        answer: 0,
+        why: "Unplugging the gripper is normal handling and doesn't need a power-down. Only the BAT / 24V / 12V terminals do."
+      },
+      {
+        q: "Why did we replace the G1's standard three-finger hands with grippers?",
+        options: [
+          "They're cheaper to replace when damaged",
+          "They're more useful and handle a wider range of tasks",
+          "The three-finger hands aren't compatible with VR control",
+          "They're lighter, which extends battery runtime"
+        ],
+        answer: 1,
+        why: "Capability, not cost or weight. The gripper handles more of the tasks we actually capture."
+      },
+      {
+        q: "Which parts of the port panel can you unplug without switching Homie off first?",
+        options: [
+          "The USB connections only",
+          "The BAT / 24V / 12V power terminals only",
+          "All of them — the panel is designed for it",
+          "None of them — the robot goes off before anything is touched"
+        ],
+        answer: 0,
+        why: "USB is hot-pluggable. The BAT / 24V / 12V power terminals are not — the robot goes off before those come out."
+      }
+    ]
+  },
+  {
+    title: "Part 1 — Starting up the robot",
+    lede: "Twelve steps, in order, from switching on to controlling Homie in VR.",
+    video: "",
+    body: `
+      <div class="handoff" style="border-left-color:var(--clear);margin-bottom:26px">
+        <div>
+          <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Before you begin</div>
+          <p style="margin:0 0 4px;font-family:var(--display);font-weight:600;font-size:17px">Download the Unitree App</p>
+          <p class="note" style="margin:0">You can't run step 2 without it. Install it now, before
+          you're standing next to a robot.</p>
+        </div>
+        <a class="btn" href="https://www.unitree.com/app/g1/" target="_blank" rel="noopener">Get the app</a>
+      </div>
+
+      <p>The sequence is order-dependent — read it through before you run it.</p>
+
+      <h3>Step 1 — Sit the bot, then switch on</h3>
+      <p>Make sure Homie is in a sitting position before you switch it on. Powering up a bot that isn't
+      sitting is how the sequence goes wrong before it has started.</p>
+      <figure class="fig"><img src="assets/start-01-sitting.jpg" alt="Homie in a sitting position ready to be switched on"></figure>
+
+      <h3>Step 2 — Open the Unitree App and click Device</h3>
+      <figure class="fig"><img src="assets/start-02-device.jpg" alt="Unitree App with the Device option"></figure>
+
+      <h3>Step 3 — Click Service Status</h3>
+      <p>This is the Service tab from your glossary — inside the app it's labelled Service Status.</p>
+      <figure class="fig"><img src="assets/start-03-service-status.jpg" alt="Service Status screen in the app"></figure>
+
+      <h3>Step 4 — Enable Teleop, disable ai_sport</h3>
+      <p>Both, and in that combination. Teleop on is what lets you drive Homie; ai_sport off is what
+      stops it driving itself.</p>
+      <figure class="fig"><img src="assets/start-04-teleop.jpg" alt="Service list showing Teleop enabled and ai_sport disabled"></figure>
+
+      <h3>Step 5 — L2 + up to enter standing mode</h3>
+      <p>On the controller.</p>
+      <figure class="fig"><img src="assets/start-05-standing.jpg" alt="Controller being used to put the robot into standing mode"></figure>
+
+      <h3>Step 6 — Hand behind the robot, and do not let go</h3>
+      <p>Get your hand behind Homie to give it a push as it stands.</p>
+      <p><strong>Don't let go of the bot in this state</strong> — it isn't stable until walking mode.</p>
+      <figure class="fig"><img src="assets/start-06-hand-behind.jpg" alt="Operator with a hand behind the robot as it stands"></figure>
+      <figure class="fig">
+        <img src="assets/start-06b-hold-on.jpg" alt="Robot in standing mode being held by the operator">
+        <figcaption>Still holding on — this is the state you don't let go in.</figcaption>
+      </figure>
+
+      <h3>Step 7 — R1 + X to enter walking mode</h3>
+      <p><strong>The bot bounces as it enters walking mode</strong> — keep your legs clear.</p>
+      <figure class="fig"><img src="assets/start-07-walking.jpg" alt="Robot entering walking mode"></figure>
+
+      <h3>Step 8 — Open the Homie Site and toggle the program</h3>
+      <p>Go to <code>http://homie&lt;yourbotname&gt;.local:5000</code> — your bot's own name goes in
+      place of <code>&lt;yourbotname&gt;</code> — and toggle the program.</p>
+      <figure class="fig"><img src="assets/start-08-toggle-program.jpg" alt="Homie Site with the program toggle"></figure>
+
+      <h3>Step 9 — Confirm the head camera is live</h3>
+      <p>Refresh a few times and watch whether the frame changes. A still frame that never updates is
+      a camera that isn't running — and a session recorded without it is a session wasted.</p>
+      <figure class="fig"><img src="assets/start-09-head-camera.jpg" alt="Head camera feed shown on the Homie Site"></figure>
+
+      <h3>Step 10 — Put on the VR headset and open the browser</h3>
+      <figure class="fig"><img src="assets/start-10-vr-browser.jpg" alt="Browser open inside the VR headset"></figure>
+
+      <h3>Step 11 — Go to your assigned URL and click Virtual Reality</h3>
+      <figure class="fig"><img src="assets/start-11-virtual-reality.jpg" alt="Assigned URL with the Virtual Reality option"></figure>
+
+      <h3>Step 12 — Take the VR off, hang it on your neck, and start controlling</h3>
+      <figure class="fig"><img src="assets/start-12-neck.jpg" alt="VR headset resting on the operator's neck"></figure>
+
+
+      <h3>Full walkthrough</h3>
+      <p>The whole start-up sequence, start to finish.</p>
+      <figure class="fig fig--portrait">
+        <iframe src="https://www.youtube-nocookie.com/embed/80q-fufyJ78?rel=0"
+          title="Starting up the robot — full walkthrough"
+          allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </figure>`,
+    quiz: [
+      {
+        q: "What position does Homie need to be in before you switch it on?",
+        options: ["Standing", "Sitting", "Lying flat", "It doesn't matter"],
+        answer: 1,
+        why: "Sitting. The whole sequence assumes it."
+      },
+      {
+        q: "On the Service Status screen, which combination do you set?",
+        options: [
+          "Enable Teleop, enable ai_sport",
+          "Disable Teleop, enable ai_sport",
+          "Enable Teleop, disable ai_sport",
+          "Disable both"
+        ],
+        answer: 2,
+        why: "Teleop on lets you drive it. ai_sport off stops it driving itself. Getting this pair backwards is the easiest mistake in the sequence."
+      },
+      {
+        q: "Homie is in standing mode after L2 + up. What are you doing with your hands?",
+        options: [
+          "Stepping back to give it room to balance",
+          "Keeping hold of it — it isn't stable until walking mode",
+          "Holding the controller with both hands, ready for the next input",
+          "Supporting it only if it starts to lean"
+        ],
+        answer: 1,
+        why: "Standing mode isn't stable. You keep hold until walking mode is entered."
+      },
+      {
+        q: "What should you expect the moment you press R1 + X?",
+        options: [
+          "The bot settles and goes still",
+          "The bot bounces — keep your legs clear",
+          "The bot sits back down automatically",
+          "Nothing visible until you move the controller"
+        ],
+        answer: 1,
+        why: "It bounces on entering walking mode."
+      },
+      {
+        q: "On the Homie Site the head camera frame looks identical every time you refresh. What does that mean?",
+        options: [
+          "The camera is working — a static scene gives a static frame",
+          "The camera isn't running, and collecting now would waste the session",
+          "The page is cached; it doesn't tell you anything either way",
+          "The camera is fine but the program toggle hasn't been set"
+        ],
+        answer: 1,
+        why: "A frame that never changes means the feed isn't live. Fix it before you collect, not after."
+      }
+    ]
+  },
+  {
+    title: "Part 2 — Shutting down the robot",
+    lede: "Eight steps, run at the end of every session so the battery can be swapped.",
+    video: "",
+    body: `
+      <p>Every hour and a half — one session — Homie is switched off so the battery can be swapped.
+      You'll run this sequence more often than any other procedure in the job.</p>
+      <p>Worth knowing before you read the steps: Homie doesn't lower itself when you power it off.
+      It drops, and you catch it. That's why the chair goes in first and why you're braced behind the
+      bot before the power button is touched.</p>
+
+      <h3>Step 1 — Click X on the controller</h3>
+
+      <h3>Step 2 — Put the chair behind the standing bot</h3>
+      <p>The chair goes in place before anything is lowered, not during.</p>
+
+      <h3>Step 3 — Lower the bot using the controller</h3>
+      <figure class="fig">
+        <video controls preload="metadata" playsinline src="assets/stop-lowering.mp4"></video>
+        <figcaption>Lowering the bot towards the chair.</figcaption>
+      </figure>
+
+      <h3>Step 4 — Stop slightly above the chair</h3>
+      <p>Not too low. You want Homie just above the seat, not resting on it.</p>
+      <figure class="fig"><img src="assets/stop-04-height.jpg" alt="Robot lowered to just above the seat of the chair"></figure>
+
+      <h3>Step 5 — Hold the bot from behind and prepare for the fall</h3>
+      <p>Get into position before you touch the power button.</p>
+      <figure class="fig"><img src="assets/stop-05-hold-behind.jpg" alt="Operator braced behind the robot, holding it"></figure>
+
+      <h3>Step 6 — Power off: click once, then click again and hold for 3 seconds</h3>
+      <figure class="fig"><img src="assets/stop-06-power-off.jpg" alt="Pressing the battery button to power the robot down"></figure>
+      <p>Note the difference from starting up: powering <strong>on</strong> is click, then hold for
+      <strong>two</strong> seconds. Powering <strong>off</strong> is click, then hold for
+      <strong>three</strong>.</p>
+
+      <h3>Step 7 — Catch the bot as it falls</h3>
+      <figure class="fig"><img src="assets/stop-07-catch.jpg" alt="Operator catching the robot as it drops onto the chair"></figure>
+
+      <h3>Step 8 — Check the wires</h3>
+      <p>Make sure nothing is tangled or crushed underneath. A cable smashed between the bot and the
+      chair is damage you'll only discover when something stops working mid-session.</p>
+      <figure class="fig"><img src="assets/stop-08-wires.jpg" alt="Checking the robot's wires are clear and untangled"></figure>
+      <h3>Uploading the data</h3>
+      <p>You don't have to start the upload. Turn the bot on and it uploads automatically.</p>
+      <p>What you do have to do is <strong>check that it's actually running</strong>. Go to your Homie
+      Site and look at Dataset.</p>
+      <figure class="fig">
+        <img src="assets/dataset-check.jpg" alt="Dataset view on the Homie Site showing the upload in progress">
+      </figure>
+      <p>Automatic isn't the same as guaranteed. An upload that silently didn't happen looks exactly
+      like a finished day until someone goes looking for the data.</p>
+
+      <h3>Full walkthrough</h3>
+      <p>The whole shutdown sequence, start to finish.</p>
+      <figure class="fig fig--portrait">
+        <iframe src="https://www.youtube-nocookie.com/embed/m9Scl96pKRM?rel=0"
+          title="Shutting down the robot — full walkthrough"
+          allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </figure>`,
+    quiz: [
+      {
+        q: "When does the chair go behind the bot?",
+        options: [
+          "Before you start lowering it",
+          "Once it's partway down",
+          "After power off, while you're holding it",
+          "It doesn't matter as long as it's there before power off"
+        ],
+        answer: 0,
+        why: "Chair first, then lower."
+      },
+      {
+        q: "How far down do you lower Homie before powering off?",
+        options: [
+          "All the way onto the chair seat",
+          "To just above the chair, not resting on it",
+          "As low as the controller allows",
+          "Halfway, so there's room to brace"
+        ],
+        answer: 1,
+        why: "Slightly above the chair."
+      },
+      {
+        q: "What happens when you power Homie off?",
+        options: [
+          "It lowers itself gently onto the chair",
+          "It holds its position until you move it",
+          "It falls, and you have to catch it",
+          "It sits down automatically if the chair is behind it"
+        ],
+        answer: 2,
+        why: "It drops. That's why the chair goes in first and you're braced behind it."
+      },
+      {
+        q: "Powering on is click, then click and hold for two seconds. What's the power-off hold?",
+        options: ["1 second", "2 seconds", "3 seconds", "5 seconds"],
+        answer: 2,
+        why: "Three seconds to power off, two to power on. Easy pair to mix up."
+      },
+      {
+        q: "The bot is down and off. What's the last thing you check?",
+        options: [
+          "That the head camera has stopped streaming",
+          "That the wires aren't tangled or crushed",
+          "That the session has finished uploading",
+          "That the gripper is in its resting position"
+        ],
+        answer: 1,
+        why: "Crushed cabling is damage you won't notice until something fails mid-session later."
+      },
+      {
+        q: "What do you need to do to upload your session data?",
+        options: [
+          "Start the upload manually from the Homie Site",
+          "Nothing to start it — but check Dataset to confirm it's running",
+          "Nothing at all; it's handled automatically end to end",
+          "Export it from the Unitree App before powering down"
+        ],
+        answer: 1,
+        why: "Turning the bot on starts the upload by itself. Checking Dataset on the Homie Site is how you know it worked."
+      }
+    ]
+  },
+  {
+    title: "Controlling Homie in VR",
+    lede: "What every button does, and the one you press first.",
+    video: "",
+    body: `
+      <p><strong>Always click A to start the program.</strong> Nothing else works until you have.</p>
+
+      <figure class="fig">
+        <img src="assets/vr-controls.jpg" alt="Diagram of both VR controllers with every control labelled">
+        <figcaption>Left controller on the left, right controller on the right.</figcaption>
+      </figure>
+
+      <h3>Left controller</h3>
+      <ul>
+        <li><strong>Thumbstick</strong> — move forward, back, left and right</li>
+        <li><strong>X</strong> — stop program</li>
+        <li><strong>Y</strong> — stop recording</li>
+      </ul>
+
+      <h3>Right controller</h3>
+      <ul>
+        <li><strong>Thumbstick</strong> — rotate</li>
+        <li><strong>A</strong> — start program</li>
+        <li><strong>B</strong> — start recording</li>
+        <li><strong>System button</strong> — relocate the VR screen</li>
+      </ul>
+
+      <h3>Both controllers</h3>
+      <ul>
+        <li><strong>Grip</strong> (the button under your middle finger) — open gripper</li>
+        <li><strong>Trigger</strong> (under your index finger) — close gripper</li>
+      </ul>
+
+      <h3>Two patterns worth memorising</h3>
+      <p><strong>Right hand starts, left hand stops.</strong> A starts the program and B starts
+      recording, both on the right. X stops the program and Y stops recording, both on the left.
+      If you're reaching for a stop and you're on the right controller, you're on the wrong hand.</p>
+      <p><strong>Left stick moves, right stick turns.</strong> The left thumbstick walks Homie around;
+      the right one rotates it on the spot.</p>
+
+      <h3>Full walkthrough</h3>
+      <figure class="fig fig--portrait">
+        <iframe src="https://www.youtube-nocookie.com/embed/Ik0J2AhNkkk?rel=0"
+          title="Controlling the robot — walkthrough"
+          allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </figure>`,
+    quiz: [
+      {
+        q: "You've got the headset on and you're ready to control Homie. What do you press first?",
+        options: ["B", "A", "X", "The left thumbstick"],
+        answer: 1,
+        why: "A starts the program. Always first — nothing else responds until it's running."
+      },
+      {
+        q: "Which buttons stop the program and stop recording?",
+        options: [
+          "A and B, on the right controller",
+          "X and Y, on the left controller",
+          "X on the left, B on the right",
+          "Y on the left, A on the right"
+        ],
+        answer: 1,
+        why: "Right hand starts, left hand stops. X stops the program, Y stops the recording — both on the left."
+      },
+      {
+        q: "You need Homie to turn on the spot without walking anywhere. Which control?",
+        options: [
+          "Left thumbstick",
+          "Right thumbstick",
+          "Grip button on either controller",
+          "System button on the right controller"
+        ],
+        answer: 1,
+        why: "Right thumbstick rotates. The left one moves forward, back, left and right."
+      },
+      {
+        q: "Which control opens the gripper?",
+        options: [
+          "The trigger, under your index finger",
+          "The grip button, under your middle finger",
+          "B on the right controller",
+          "Pushing the thumbstick in"
+        ],
+        answer: 1,
+        why: "Grip opens, trigger closes. Both work the same on either controller."
+      },
+      {
+        q: "Your VR screen has drifted out of comfortable view mid-session. What do you use?",
+        options: [
+          "The system button on the right controller",
+          "Stop the program with X and restart with A",
+          "The right thumbstick",
+          "Take the headset off and put it back on"
+        ],
+        answer: 0,
+        why: "The system button relocates the VR screen — no need to stop anything."
+      }
+    ]
+  },
+  {
+    title: "Your numbers: hours and failure rate",
+    lede: "The volume you're expected to hit, and the sixteen things that stop collected data from counting.",
+    video: "",
+    body: `
+      <h3>Hours</h3>
+      <p>The volume target is <strong>100 hours per month</strong>, which works out at
+      <strong>250 minutes collected per day</strong>.</p>
+      <p>The daily number is not a guideline. Unless something is genuinely wrong with the bot, it has
+      to be reached. If you're going to miss it because of a hardware problem, that's a conversation to
+      have on the day — not something to discover at the end of the month.</p>
+
+      <h3>Failure rate</h3>
+      <p>Failure rate is the yield of what you collected: how much of your session survives as usable
+      data. Hours you collected that fail don't count toward anything.</p>
+      <p>Sixteen things can cost you yield. They fall into three groups, and the groups matter because
+      you catch them at different moments.</p>
+
+      <h4>Something went wrong physically</h4>
+      <ul>
+        <li>Item drop</li>
+        <li>Bot fell</li>
+      </ul>
+
+      <h4>The episode isn't a clean, complete task</h4>
+      <ul>
+        <li>Unfinished task — jumped to another episode</li>
+        <li>Unfinished task — recording stopped early</li>
+        <li>Unnecessary action</li>
+        <li>Human intervention</li>
+        <li>Reset environment</li>
+        <li>Bot resting</li>
+      </ul>
+
+      <h4>The data didn't come out</h4>
+      <ul>
+        <li>No head image</li>
+        <li>No left wrist image</li>
+        <li>No right wrist image</li>
+        <li>Camera lagging</li>
+        <li>Head camera lagging</li>
+        <li>Wrist camera lagging</li>
+        <li>Frozen image</li>
+        <li>No MCAP</li>
+      </ul>
+
+      <p>That third group is worth dwelling on. Eight of the sixteen failure reasons are about images
+      and files, not about anything you did with your hands — and every one of them is invisible while
+      you're inside the headset performing the task perfectly. This is why the head camera check in the
+      startup sequence exists, and why noticing a frozen or lagging feed early is worth more than any
+      recovery you can make afterwards.</p>`,
+    quiz: [
+      {
+        q: "What's the daily collection target?",
+        options: ["100 minutes", "250 minutes", "100 hours", "It varies by site"],
+        answer: 1,
+        why: "250 minutes daily, which adds up to 100 hours a month."
+      },
+      {
+        q: "When is it acceptable to miss the daily target?",
+        options: [
+          "When the site was smaller than expected",
+          "When something is genuinely wrong with the bot",
+          "Whenever the monthly total is still on track",
+          "It's a guideline, so any reasonable shortfall is fine"
+        ],
+        answer: 1,
+        why: "A bot problem is the exception. Everything else means the number has to be reached."
+      },
+      {
+        q: "You completed a full hour of collection and the task went perfectly, but the right wrist camera was frozen throughout. What's the outcome?",
+        options: [
+          "It counts — the task itself was performed correctly",
+          "It counts at reduced value",
+          "It counts against your failure rate — the data isn't usable",
+          "It counts as long as the head camera was working"
+        ],
+        answer: 2,
+        why: "A frozen feed is a failure reason. Hours that don't produce usable data don't count, no matter how well you performed."
+      },
+      {
+        q: "Which of these is a failure reason?",
+        options: [
+          "Taking longer than expected to complete a task",
+          "Resetting the environment",
+          "Repeating the same task type several times in a row",
+          "Working in a home you've collected in before"
+        ],
+        answer: 1,
+        why: "Reset environment is on the list. Slow, repeated, or familiar work isn't a failure — it just isn't diverse."
+      },
+      {
+        q: "Why does the group of camera and file failures deserve particular attention?",
+        options: [
+          "They're the most common failures on site",
+          "They're invisible from inside the headset while you're working",
+          "They can only be fixed by the tech team",
+          "They affect behaviour rate as well as failure rate"
+        ],
+        answer: 1,
+        why: "You can perform a task flawlessly and still lose it to a dead feed you couldn't see. That's why you check before you start."
+      }
+    ]
+  },
+  {
+    title: "Behaviour rate: moving like a person",
+    lede: "Seven standards that decide whether clean data is also good data.",
+    video: "",
+    body: `
+      <p>Failure rate asks whether the data came out. Behaviour rate asks whether what's in it looks
+      like a body moving through a room the way a person would.</p>
+      <p>This is the measure people underestimate. A session can drop nothing, stall for zero seconds,
+      upload perfectly — and still be poor data, because Homie moved in a way no human would. Remember
+      what the data is for: the robot learns from your demonstration. Sloppy movement teaches sloppy
+      movement.</p>
+      <p>Seven standards, split by how much they cost you.</p>
+
+      <h3>Major errors</h3>
+
+      <h4>CRAB — no crab walking</h4>
+      <p>Avoid prolonged sideways movement, lateral shuffling, or any situation where the head camera
+      is pointing somewhere clearly different from where the body is travelling.</p>
+      <p><strong>Do this instead:</strong> while moving, the head camera should face the destination.
+      Turn the robot to face where it's going first, then walk forward.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/a100078a991445ebb2672544c2a690cf" target="_blank" rel="noopener">Example 1</a>
+        <a href="https://www.loom.com/share/4e5a872010ea413ab38b90108253b116" target="_blank" rel="noopener">Example 2</a>
+        <span class="looms__lab">Done right</span>
+        <a href="https://www.loom.com/share/9589f75a3cf44ca18ebb8c9a9bdb842a" target="_blank" rel="noopener">Correct 1</a>
+      </div>
+
+      <h4>IDLE HAND — no hand left hanging</h4>
+      <p>One hand doing everything while the other hangs unused looks unnatural and makes the
+      coordination between the two hands poor.</p>
+      <p><strong>Do this instead:</strong> coordinate both hands. If the left hand is holding
+      something, the right can already be moving in to assist rather than arriving at the last moment.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/d7c7c14430c9478a9d76283e8db9e976" target="_blank" rel="noopener">Example 1</a>
+        <a href="https://www.loom.com/share/b4d02e0f26cd42c18887fab01aac7052" target="_blank" rel="noopener">Example 2</a>
+        <span class="looms__lab">Done right</span>
+        <a href="https://www.loom.com/share/9b2cb567715049dbae3a8c5a2c9c7e53" target="_blank" rel="noopener">Correct 1</a>
+        <a href="https://www.loom.com/share/6823c044921c49c381b09139820df0af" target="_blank" rel="noopener">Correct 2</a>
+      </div>
+
+      <h4>OFF FRAMING — keep the target centred</h4>
+      <p>The object you're working with should sit in the centre of the camera frame, not drift to the
+      edge of it.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/211e019e9e724d2f8ec22349e9811f9a" target="_blank" rel="noopener">Example 1</a>
+        <a href="https://www.loom.com/share/89a9798698e9411db90e2d4f79cb22f8" target="_blank" rel="noopener">Example 2</a>
+        <span class="looms__lab">Done right</span>
+        <a href="https://www.loom.com/share/7825f1531d61434aae17e3b4e1cb1dfe" target="_blank" rel="noopener">Correct 1</a>
+      </div>
+
+      <h4>BUTLER — be a proper butler</h4>
+      <p>Nothing rushed, nothing tossed, nothing left half-done. Place objects rather than dropping
+      them, and use both hands for small final adjustments. Be neat.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/9d0dda77bde34af8a850e116bd77e468" target="_blank" rel="noopener">Example 1</a>
+      </div>
+
+      <h4>BLUR — clear, stable images</h4>
+      <p>Movement fast enough to smear the image costs you the frame.</p>
+      <figure class="fig">
+        <img src="assets/blur-example.jpg" alt="Example of a blurred, unusable camera frame">
+      </figure>
+
+      <h3>Minor errors</h3>
+
+      <h4>SHUFFLE — no foot shuffling after arrival</h4>
+      <p>Paths should be natural, direct and continuous. Avoid repeated left-right micro-steps, moving
+      back and forth, or spinning on the spot to correct position.</p>
+      <p><strong>Do this instead:</strong> plan the approach and do it in one go. If you need to change
+      direction, complete a clear turn, then continue in a straight line.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/943f25dbce874ab091d2de2005f72be3" target="_blank" rel="noopener">Example 1</a>
+        <a href="https://www.loom.com/share/06e97bff01504c40959d70a0c7cb0fa9" target="_blank" rel="noopener">Example 2</a>
+        <span class="looms__lab">Done right</span>
+        <a href="https://www.loom.com/share/e012c5d25b744a42b46443fee3c3ef34" target="_blank" rel="noopener">Correct 1</a>
+      </div>
+
+      <h4>PATHING — follow human logic</h4>
+      <p>Movement and task order should follow the sequence a person would actually use. Walk to
+      position before raising the hands, rather than walking with hands already up. Reach for the broom
+      rather than starting with it already held.</p>
+      <div class="looms">
+        <span class="looms__lab">What it looks like</span>
+        <a href="https://www.loom.com/share/f0a49c5946754696bf1b3f7825411848" target="_blank" rel="noopener">Example 1</a>
+        <a href="https://www.loom.com/share/68161414bd6542849f719ac7a03750a4" target="_blank" rel="noopener">Example 2</a>
+        <span class="looms__lab">Done right</span>
+        <a href="https://www.loom.com/share/0c0aa46d3f774fbe91b299d7523f3c53" target="_blank" rel="noopener">Correct 1</a>
+      </div>
+
+      <h3>The thread running through all seven</h3>
+      <p>Every one of these is the same question asked differently: <em>would a person have done it that
+      way?</em> If the answer is no, it's a behaviour error — even when the task was completed and
+      nothing was dropped.</p>`,
+    quiz: [
+      {
+        q: "Homie needs to get to a table on its left. What's the correct movement?",
+        options: [
+          "Step sideways towards it, keeping the head camera on the table",
+          "Turn to face the table, then walk forward",
+          "Walk forward past it, then turn back",
+          "Either, as long as the task gets done"
+        ],
+        answer: 1,
+        why: "Turn first, then walk forward. Sideways travel with the head facing elsewhere is crab walking — a major error."
+      },
+      {
+        q: "You're carrying out a task that only really needs one hand. What should the other hand be doing?",
+        options: [
+          "Hanging by the side, out of the frame",
+          "Assisting or moving into position to help",
+          "Resting on the robot's body to keep it stable",
+          "Nothing — one-handed tasks are one-handed"
+        ],
+        answer: 1,
+        why: "Idle hand is a major error. Coordinate both, and bring the second hand in early rather than at the last moment."
+      },
+      {
+        q: "Which of these is a MINOR error rather than a major one?",
+        options: [
+          "Blurred, unstable images",
+          "The target object drifting off-centre in the frame",
+          "Small back-and-forth foot shuffles after arriving",
+          "Tossing an item instead of placing it"
+        ],
+        answer: 2,
+        why: "Shuffle and pathing are the two minors. Crab, idle hand, off framing, butler and blur are all majors."
+      },
+      {
+        q: "You've finished moving a pillow onto the sofa. What does 'being a proper butler' ask of you?",
+        options: [
+          "Complete it quickly so the episode stays short",
+          "Place it and use both hands for small adjustments",
+          "Drop it on the sofa and move to the next task",
+          "Step back so the whole sofa is in frame"
+        ],
+        answer: 1,
+        why: "Nothing rushed, tossed or half-done. Place it, then tidy it with both hands."
+      },
+      {
+        q: "A session drops nothing, has no idle time, and uploads cleanly — but Homie walked with its hands already raised and shuffled into position on arrival. How does it score?",
+        options: [
+          "Fine on both measures",
+          "Good failure rate, but behaviour errors",
+          "Good behaviour rate, but a failure",
+          "It fails entirely and has to be recollected"
+        ],
+        answer: 1,
+        why: "Nothing failed, so failure rate is fine. But walking with hands up is a pathing error and shuffling is a shuffle error — both behaviour."
+      }
+    ]
+  },
+];
+
+/* ==================================================================
+   ██  END OF CONFIG  ██  — nothing below here needs editing
+   ================================================================== */
+
+const KEY = 'fb-onboard-v1';
+let S = load();
+let openIdx = 0;
+let phase = 'read';   // 'read' = material screen, 'quiz' = check screen
+
+function load(){
+  try{
+    const r = JSON.parse(localStorage.getItem(KEY));
+    if(r && typeof r === 'object') return {name:r.name||'', done:Array.isArray(r.done)?r.done:[], finished:!!r.finished};
+  }catch(e){}
+  return {name:'', done:[], finished:false};
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch(e){ /* private browsing — progress just won't persist */ }
+}
+function cleared(i){ return S.done.includes(i); }
+function unlocked(i){ return i === 0 || cleared(i-1); }
+function nextOpen(){
+  for(let i=0;i<MODULES.length;i++) if(!cleared(i)) return i;
+  return MODULES.length - 1;
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function code(){
+  const seed = (S.name || 'trainee').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3).padEnd(3,'X');
+  let n = 0;
+  for(const ch of (S.name||'') + MODULES.length) n = (n*31 + ch.charCodeAt(0)) % 9973;
+  return seed + '-' + String(n).padStart(4,'0');
+}
+
+/* ---------- chrome ---------- */
+function paintMeter(){
+  const pct = MODULES.length ? (S.done.length / MODULES.length) * 100 : 0;
+  document.getElementById('meterFill').style.width = pct + '%';
+  document.getElementById('meterNum').textContent = S.done.length + ' / ' + MODULES.length;
+}
+function paintRail(){
+  const rail = document.getElementById('rail');
+  if(!S.name){ rail.classList.add('hidden'); return; }
+  rail.classList.remove('hidden');
+  const list = document.getElementById('railList');
+  list.innerHTML = '';
+  MODULES.forEach((m,i) => {
+    const state = cleared(i) ? 'cleared' : (unlocked(i) ? 'active' : 'locked');
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.className = 'rung' + (i === openIdx && !S.finished ? ' is-open' : '');
+    b.dataset.s = state;
+    b.disabled = !unlocked(i);
+    b.innerHTML = '<span class="rung__no">' + String(i+1).padStart(2,'0') + '</span>' +
+      '<span>' + esc(m.title) + '<span class="rung__state">' + state + '</span></span>';
+    b.onclick = () => { openIdx = i; phase = 'read'; S.finished = false; render(); window.scrollTo({top:0,behavior:'smooth'}); };
+    li.appendChild(b);
+    list.appendChild(li);
+  });
+}
+
+/* ---------- screens ---------- */
+function screenStart(){
+  return `<div class="card">
+    <div class="u eyebrow">Before you begin</div>
+    <h1>Field Operations Onboarding</h1>
+    <p class="lede">${MODULES.length} modules, each ending in a short check. You can't move
+    forward until the check is passed, and you can retry as many times as you need.</p>
+    <label class="field">
+      <span class="u" style="color:var(--ink-soft)">Your full name</span>
+      <input id="nameIn" type="text" autocomplete="name" placeholder="As it should appear on your certificate">
+    </label>
+    <div class="btnrow"><button class="btn" id="startBtn">Start onboarding</button></div>
+    <hr class="divider">
+    <p class="note">Your progress is saved in this browser on this device. You can close the
+    tab and come back over several days. If you switch to a different device or browser,
+    or use a private window, you'll start again from module 01.</p>
+  </div>`;
+}
+
+function screenRead(i){
+  const m = MODULES[i];
+  const vid = m.video
+    ? `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${esc(m.video)}?rel=0"
+         title="${esc(m.title)}" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+         allowfullscreen loading="lazy"></iframe></div>` : '';
+  const done = cleared(i);
+  return `
+    <div class="u eyebrow">Module ${String(i+1).padStart(2,'0')} of ${String(MODULES.length).padStart(2,'0')}</div>
+    <h1>${esc(m.title)}</h1>
+    ${m.lede ? `<p class="lede">${esc(m.lede)}</p>` : ''}
+    ${vid}
+    <div class="prose">${m.body}</div>
+    <hr class="divider">
+    <div class="handoff">
+      <div>
+        <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Next</div>
+        <p style="margin:0 0 4px;font-family:var(--display);font-weight:600;font-size:17px">
+          ${done ? 'Comprehension check — already cleared' : 'Comprehension check'}
+        </p>
+        <p class="note" style="margin:0">${m.quiz.length} question${m.quiz.length>1?'s':''}. The material
+        isn't on screen during the check, so read it properly first. Unlimited attempts.</p>
+      </div>
+      <button class="btn" id="toQuizBtn">${done ? 'Retake the check' : 'Start the check'}</button>
+    </div>`;
+}
+
+function screenQuiz(i){
+  const m = MODULES[i];
+  const qs = m.quiz.map((q,qi) => `
+    <div class="q" data-q="${qi}">
+      <p class="q__text">${qi+1}. ${esc(q.q)}</p>
+      ${q.options.map((o,oi) => `
+        <label class="opt" data-o="${oi}">
+          <input type="radio" name="q${qi}" value="${oi}">
+          <span>${esc(o)}</span>
+          <span class="flag"></span>
+        </label>`).join('')}
+    </div>`).join('');
+
+  const done = cleared(i);
+  return `
+    <div class="u eyebrow">Module ${String(i+1).padStart(2,'0')} — comprehension check</div>
+    <h1>${esc(m.title)}</h1>
+    <section class="quiz" id="quiz">
+      <div class="quiz__head">
+        <span class="u">${m.quiz.length} question${m.quiz.length>1?'s':''}</span>
+        <span class="u">${done ? 'Cleared' : 'Required to continue'}</span>
+      </div>
+      <h2>${done ? 'Retaking a cleared check' : 'Answer all questions to unlock the next module'}</h2>
+      ${qs}
+      <div class="btnrow">
+        <button class="btn" id="markBtn">Check answers</button>
+        <button class="btn btn--ghost" id="backBtn">Back to the material</button>
+        ${done ? `<button class="btn btn--go" id="fwdBtn">${i+1 < MODULES.length ? 'Next module' : 'View certificate'}</button>` : ''}
+      </div>
+      <div class="verdict hidden" id="verdict"></div>
+    </section>`;
+}
+
+function screenCert(){
+  const d = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  return `
+    <div class="cert">
+      <div class="cert__seal">Frodobots — Field Operations</div>
+      <div class="cert__line"></div>
+      <p class="note" style="margin:0">This confirms that</p>
+      <div class="cert__name">${esc(S.name)}</div>
+      <p class="note" style="margin:0 auto;max-width:34ch">has completed all ${MODULES.length} onboarding
+      modules and passed every comprehension check.</p>
+      <div class="cert__line"></div>
+      <div class="cert__meta">
+        Completed ${d}<br>
+        Verification code
+        <div class="cert__code">${code()}</div>
+      </div>
+    </div>
+    <div class="btnrow noprint" style="margin-top:26px">
+      <button class="btn" id="printBtn">Save or print certificate</button>
+      <button class="btn btn--ghost" id="resetBtn">Reset my progress</button>
+    </div>
+    <p class="note noprint" style="margin-top:20px;max-width:52ch">Send the saved certificate,
+    or the verification code above, to your onboarding contact.</p>`;
+}
+
+/* ---------- marking ---------- */
+function mark(i){
+  const m = MODULES[i], quiz = document.getElementById('quiz');
+  let right = 0, answered = 0;
+
+  m.quiz.forEach((q,qi) => {
+    const block = quiz.querySelector('[data-q="'+qi+'"]');
+    const picked = block.querySelector('input:checked');
+    block.querySelectorAll('.opt').forEach(o => { o.classList.remove('ok','no'); o.querySelector('.flag').textContent = ''; });
+    if(!picked) return;
+    answered++;
+    const pi = Number(picked.value);
+    const opt = block.querySelector('.opt[data-o="'+pi+'"]');
+    if(pi === q.answer){ right++; opt.classList.add('ok'); opt.querySelector('.flag').textContent = 'Correct'; }
+    else{
+      opt.classList.add('no'); opt.querySelector('.flag').textContent = 'Not this one';
+      const truth = block.querySelector('.opt[data-o="'+q.answer+'"]');
+      truth.classList.add('ok'); truth.querySelector('.flag').textContent = 'Correct';
+    }
+  });
+
+  const v = document.getElementById('verdict');
+  v.classList.remove('hidden');
+
+  if(answered < m.quiz.length){
+    v.dataset.v = 'fail';
+    v.textContent = 'Answer every question before checking — ' + (m.quiz.length - answered) + ' still blank.';
+    return;
+  }
+
+  const score = right / m.quiz.length;
+  if(score >= PASS_MARK){
+    v.dataset.v = 'pass';
+    v.textContent = 'Passed — ' + right + ' of ' + m.quiz.length + ' correct. Module ' +
+                    String(i+1).padStart(2,'0') + ' cleared.';
+    if(!cleared(i)){ S.done.push(i); S.done.sort((a,b)=>a-b); save(); }
+    paintMeter(); paintRail();
+    if(!document.getElementById('fwdBtn')){
+      const b = document.createElement('button');
+      b.className = 'btn btn--go'; b.id = 'fwdBtn';
+      b.textContent = i+1 < MODULES.length ? 'Next module' : 'View certificate';
+      b.onclick = forward;
+      document.querySelector('.btnrow').appendChild(b);
+    }
+  }else{
+    v.dataset.v = 'fail';
+    v.textContent = right + ' of ' + m.quiz.length + ' correct. Read the marked answers above, ' +
+                    'then check again — there\'s no limit on attempts.';
+    m.quiz.forEach((q,qi) => {
+      if(!q.why) return;
+      const block = document.querySelector('[data-q="'+qi+'"]');
+      if(block.querySelector('.opt.no')){
+        const p = document.createElement('p');
+        p.className = 'note'; p.style.marginTop = '10px';
+        p.textContent = q.why;
+        block.appendChild(p);
+      }
+    });
+  }
+}
+
+function forward(){
+  phase = 'read';
+  if(openIdx + 1 < MODULES.length){ openIdx++; }
+  else { S.finished = true; save(); }
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- render ---------- */
+function render(){
+  const stage = document.getElementById('stage');
+  paintMeter();
+
+  if(!S.name){
+    stage.innerHTML = screenStart();
+    paintRail();
+    const go = () => {
+      const val = document.getElementById('nameIn').value.trim();
+      if(!val){ document.getElementById('nameIn').focus(); return; }
+      S.name = val; save(); openIdx = nextOpen(); render();
+    };
+    document.getElementById('startBtn').onclick = go;
+    document.getElementById('nameIn').onkeydown = e => { if(e.key === 'Enter') go(); };
+    return;
+  }
+
+  if(S.finished && S.done.length === MODULES.length){
+    stage.innerHTML = screenCert();
+    paintRail();
+    document.getElementById('printBtn').onclick = () => window.print();
+    document.getElementById('resetBtn').onclick = () => {
+      if(confirm('This clears all progress on this device and starts again from module 01.')){
+        S = {name:'',done:[],finished:false}; save(); openIdx = 0; phase = 'read'; render();
+      }
+    };
+    return;
+  }
+
+  if(phase === 'read'){
+    stage.innerHTML = screenRead(openIdx);
+    paintRail();
+    document.getElementById('toQuizBtn').onclick = () => {
+      phase = 'quiz'; render(); window.scrollTo({top:0,behavior:'smooth'});
+    };
+    return;
+  }
+
+  stage.innerHTML = screenQuiz(openIdx);
+  paintRail();
+  document.getElementById('markBtn').onclick = () => mark(openIdx);
+  document.getElementById('backBtn').onclick = () => {
+    phase = 'read'; render(); window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const fwd = document.getElementById('fwdBtn');
+  if(fwd) fwd.onclick = forward;
+}
+
+openIdx = nextOpen();
+render();
+</script>
+</body>
+</html>
