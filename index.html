@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Field Operations Onboarding</title>
+<title>Bitrobot — Teleoperator Onboarding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -129,14 +129,20 @@ h1,h2,h3,.u{font-family:var(--display);letter-spacing:-.01em}
 .fig figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-soft);margin-top:8px}
 .fig--portrait{max-width:340px}
 .fig--portrait iframe{width:100%;aspect-ratio:9/16;border:1px solid var(--rule);display:block}
-.looms{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 26px;max-width:66ch}
-.looms__lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-right:2px}
-.looms__lab:not(:first-child){margin-left:10px}
-.looms a{
-  font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-decoration:none;
-  color:var(--signal);border:1px solid var(--rule);padding:5px 10px;background:var(--panel);
+.looms{margin:0 0 26px;max-width:66ch}
+.looms__lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 6px}
+.looms__lab:first-child{margin-top:0}
+.loom{border:1px solid var(--rule);background:var(--panel);margin-bottom:6px}
+.loom summary{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--signal);
+  padding:9px 12px;cursor:pointer;list-style:none;
 }
-.looms a:hover{border-color:var(--signal)}
+.loom summary::-webkit-details-marker{display:none}
+.loom summary::before{content:"\25B8  ";display:inline-block;transition:transform .15s}
+.loom[open] summary::before{content:"\25BE  "}
+.loom summary:hover{background:rgba(43,95,217,.05)}
+.loom__frame{position:relative;padding-top:56.25%;background:var(--ink);border-top:1px solid var(--rule)}
+.loom__frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .warn{border-left:3px solid var(--alert);background:rgba(180,52,43,.05);padding:18px 20px;margin:0 0 26px;max-width:66ch}
 .warn p{margin:0 0 10px}
 .warn p:last-child{margin-bottom:0}
@@ -199,17 +205,73 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
 .field input:focus{outline:2px solid var(--signal);outline-offset:1px}
 .note{font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--ink-soft);letter-spacing:.02em}
 
-.cert{border:2px solid var(--ink);padding:clamp(28px,5vw,58px);background:var(--panel);text-align:center;max-width:62ch}
-.cert__seal{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
-.cert__name{font-family:var(--display);font-size:clamp(26px,5vw,40px);font-weight:700;margin:22px 0 6px;line-height:1.15}
-.cert__line{width:70px;height:2px;background:var(--ink);margin:22px auto}
-.cert__meta{font-family:var(--mono);font-size:12px;line-height:2;color:var(--ink-soft);letter-spacing:.04em}
-.cert__code{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.18em;color:var(--ink);margin-top:4px}
+.cert{
+  border:1px solid var(--ink);padding:clamp(32px,6vw,72px) clamp(24px,5vw,64px);
+  background:var(--panel);text-align:center;max-width:64ch;position:relative;
+}
+.cert::after{
+  content:"";position:absolute;inset:7px;border:1px solid var(--rule);pointer-events:none;
+}
+.cert__rule{height:2px;background:var(--ink);width:44px;margin:0 auto}
+.cert__brand{
+  font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,26px);
+  letter-spacing:.22em;text-transform:uppercase;margin:26px 0 6px;
+}
+.cert__disc{
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:46px;
+}
+.cert__intro{
+  font-family:var(--body);font-size:15px;color:var(--ink-soft);
+  margin:0 auto;max-width:38ch;line-height:1.7;
+}
+.cert__name{
+  font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,46px);
+  line-height:1.1;letter-spacing:-.02em;margin:18px 0 22px;
+  padding-bottom:16px;border-bottom:1px solid var(--rule);display:inline-block;min-width:60%;
+}
+.cert__title{
+  font-family:var(--display);font-weight:600;font-size:clamp(18px,3.4vw,24px);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--clear);margin:20px 0 46px;
+}
+.cert__foot{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(20px,5vw,54px);
+  padding-bottom:30px;
+}
+.cert__lab{
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:5px;
+}
+.cert__val{font-family:var(--display);font-size:14px;font-weight:600}
+.cert__code{letter-spacing:.14em;font-family:var(--mono);font-size:14px}
+.cert__sig{margin:0 0 42px}
+.cert__sig img{max-width:230px;width:70%;height:auto;display:block;margin:0 auto 2px}
+.cert__lab--top{margin-bottom:10px}
+.cert__signer{
+  font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.01em;
+  border-top:1px solid var(--ink);display:inline-block;padding-top:8px;min-width:230px;
+}
+.cert__sig .cert__lab{margin:5px 0 14px}
+.cert__attest{
+  font-family:var(--body);font-size:12.5px;line-height:1.6;color:var(--ink-soft);
+  margin:0 auto;max-width:40ch;
+}
+
+.sigpad{position:relative;border:1px solid var(--rule);background:#fff;max-width:420px}
+.sigpad canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+.sigpad__clear{
+  position:absolute;top:6px;right:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--paper);border:1px solid var(--rule);
+  color:var(--ink-soft);padding:4px 8px;cursor:pointer;
+}
+.sigpad__clear:hover{border-color:var(--signal);color:var(--signal)}
+.sigshow{max-width:300px;width:100%;height:auto;display:block;border-bottom:1px solid var(--ink);padding-bottom:4px}
 
 .hidden{display:none !important}
 
 @media print{
   .masthead,.rail,.noprint{display:none !important}
+  .cert{page-break-inside:avoid}
   body{background:#fff}
   .shell{display:block;padding:0}
   .cert{border-color:#000;max-width:none}
@@ -227,7 +289,7 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
 
 <header class="masthead">
   <div class="masthead__in">
-    <div class="mark">FRODOBOTS <span>/ Field Operations Onboarding</span></div>
+    <div class="mark">BITROBOT <span>/ Teleoperator Onboarding</span></div>
     <div class="meter">
       <span class="u meter__num" id="meterNum">0 / 0</span>
       <div class="meter__track"><div class="meter__fill" id="meterFill"></div></div>
@@ -260,6 +322,16 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
    ================================================================== */
 
 const PASS_MARK = 1.0;   // 1.0 = must get every question right. 0.8 = 80%.
+
+/* Final instructor sign-off, shown after every module is complete and
+   before the certificate is issued. Instructor name, passcode and signature
+   are all required. */
+const SIGNOFF = {
+  role: "Instructor",
+  // Passcode for the final sign-off. Give it to instructors only.
+  code: "1234",
+  statement: "I confirm that this trainee has completed onboarding, demonstrated they can carry and operate Homie safely, and is ready to work unsupervised."
+};
 
 const MODULES = [
   {
@@ -936,6 +1008,46 @@ const MODULES = [
     ]
   },
   {
+    title: "Carrying Homie: practical assessment",
+    lede: "A live demonstration with your instructor. No quiz — your instructor unlocks this one once you've shown you can do it.",
+    unlock: {
+      role: "Instructor",
+      // Passcode for this module. Give it to instructors only.
+      code: "1234",
+      statement: "This trainee has demonstrated they can lift, carry and set down Homie safely and unassisted."
+    },
+    practical: true,
+    video: "",
+    body: `
+      <p>Homie weighs about 35 kg. Carrying it is a physical skill, and reading about it is not the
+      same as being able to do it — so this module is assessed in person.</p>
+      <p>Your instructor will demonstrate the correct lift and carry, then watch you do it. When they
+      are satisfied you can carry the bot safely and without help, they sign this module off on your
+      screen and the next module unlocks.</p>
+
+      <h3>What you'll be assessed on</h3>
+      <ul>
+        <li>Lifting from the ground with a straight back, using your legs</li>
+        <li>Where to hold the bot, and where not to — no lifting by the arms, head, or grippers</li>
+        <li>Carrying it a short distance under control, without rushing</li>
+        <li>Setting it down safely, in a stable position</li>
+        <li>Knowing when to stop and ask for a second pair of hands</li>
+      </ul>
+
+      <div class="warn">
+        <p><strong>Replace this list with your real assessment criteria.</strong> These are placeholders
+        written from the general shape of the task — your instructor should be signing against the
+        specific things your team checks for.</p>
+      </div>
+
+      <h3>If you can't do it</h3>
+      <p>There is no pass mark to fail here and no limit on attempts. If you can't carry the bot safely
+      today, that's information your instructor needs, not something to hide. Say so.</p>
+      <p class="note">Once your instructor is satisfied, they enter their passcode on the next page and
+      this module unlocks. They sign for the whole onboarding at the end.</p>`,
+    quiz: []
+  },
+  {
     title: "Your numbers: hours and failure rate",
     lede: "The volume you're expected to hit, and the sixteen things that stop collected data from counting.",
     video: "",
@@ -1060,11 +1172,29 @@ const MODULES = [
       <p><strong>Do this instead:</strong> while moving, the head camera should face the destination.
       Turn the robot to face where it's going first, then walk forward.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/a100078a991445ebb2672544c2a690cf" target="_blank" rel="noopener">Example 1</a>
-        <a href="https://www.loom.com/share/4e5a872010ea413ab38b90108253b116" target="_blank" rel="noopener">Example 2</a>
-        <span class="looms__lab">Done right</span>
-        <a href="https://www.loom.com/share/9589f75a3cf44ca18ebb8c9a9bdb842a" target="_blank" rel="noopener">Correct 1</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/a100078a991445ebb2672544c2a690cf?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Example 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/4e5a872010ea413ab38b90108253b116?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <div class="looms__lab">Done right</div>
+        <details class="loom">
+          <summary>Correct 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/9589f75a3cf44ca18ebb8c9a9bdb842a?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h4>IDLE HAND — no hand left hanging</h4>
@@ -1073,31 +1203,79 @@ const MODULES = [
       <p><strong>Do this instead:</strong> coordinate both hands. If the left hand is holding
       something, the right can already be moving in to assist rather than arriving at the last moment.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/d7c7c14430c9478a9d76283e8db9e976" target="_blank" rel="noopener">Example 1</a>
-        <a href="https://www.loom.com/share/b4d02e0f26cd42c18887fab01aac7052" target="_blank" rel="noopener">Example 2</a>
-        <span class="looms__lab">Done right</span>
-        <a href="https://www.loom.com/share/9b2cb567715049dbae3a8c5a2c9c7e53" target="_blank" rel="noopener">Correct 1</a>
-        <a href="https://www.loom.com/share/6823c044921c49c381b09139820df0af" target="_blank" rel="noopener">Correct 2</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/d7c7c14430c9478a9d76283e8db9e976?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Example 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/b4d02e0f26cd42c18887fab01aac7052?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <div class="looms__lab">Done right</div>
+        <details class="loom">
+          <summary>Correct 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/9b2cb567715049dbae3a8c5a2c9c7e53?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Correct 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/6823c044921c49c381b09139820df0af?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h4>OFF FRAMING — keep the target centred</h4>
       <p>The object you're working with should sit in the centre of the camera frame, not drift to the
       edge of it.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/211e019e9e724d2f8ec22349e9811f9a" target="_blank" rel="noopener">Example 1</a>
-        <a href="https://www.loom.com/share/89a9798698e9411db90e2d4f79cb22f8" target="_blank" rel="noopener">Example 2</a>
-        <span class="looms__lab">Done right</span>
-        <a href="https://www.loom.com/share/7825f1531d61434aae17e3b4e1cb1dfe" target="_blank" rel="noopener">Correct 1</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/211e019e9e724d2f8ec22349e9811f9a?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Example 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/89a9798698e9411db90e2d4f79cb22f8?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <div class="looms__lab">Done right</div>
+        <details class="loom">
+          <summary>Correct 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/7825f1531d61434aae17e3b4e1cb1dfe?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h4>BUTLER — be a proper butler</h4>
       <p>Nothing rushed, nothing tossed, nothing left half-done. Place objects rather than dropping
       them, and use both hands for small final adjustments. Be neat.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/9d0dda77bde34af8a850e116bd77e468" target="_blank" rel="noopener">Example 1</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/9d0dda77bde34af8a850e116bd77e468?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h4>BLUR — clear, stable images</h4>
@@ -1114,11 +1292,29 @@ const MODULES = [
       <p><strong>Do this instead:</strong> plan the approach and do it in one go. If you need to change
       direction, complete a clear turn, then continue in a straight line.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/943f25dbce874ab091d2de2005f72be3" target="_blank" rel="noopener">Example 1</a>
-        <a href="https://www.loom.com/share/06e97bff01504c40959d70a0c7cb0fa9" target="_blank" rel="noopener">Example 2</a>
-        <span class="looms__lab">Done right</span>
-        <a href="https://www.loom.com/share/e012c5d25b744a42b46443fee3c3ef34" target="_blank" rel="noopener">Correct 1</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/943f25dbce874ab091d2de2005f72be3?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Example 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/06e97bff01504c40959d70a0c7cb0fa9?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <div class="looms__lab">Done right</div>
+        <details class="loom">
+          <summary>Correct 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/e012c5d25b744a42b46443fee3c3ef34?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h4>PATHING — follow human logic</h4>
@@ -1126,11 +1322,29 @@ const MODULES = [
       position before raising the hands, rather than walking with hands already up. Reach for the broom
       rather than starting with it already held.</p>
       <div class="looms">
-        <span class="looms__lab">What it looks like</span>
-        <a href="https://www.loom.com/share/f0a49c5946754696bf1b3f7825411848" target="_blank" rel="noopener">Example 1</a>
-        <a href="https://www.loom.com/share/68161414bd6542849f719ac7a03750a4" target="_blank" rel="noopener">Example 2</a>
-        <span class="looms__lab">Done right</span>
-        <a href="https://www.loom.com/share/0c0aa46d3f774fbe91b299d7523f3c53" target="_blank" rel="noopener">Correct 1</a>
+        <div class="looms__lab">What it looks like</div>
+        <details class="loom">
+          <summary>Example 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/f0a49c5946754696bf1b3f7825411848?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <details class="loom">
+          <summary>Example 2</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/68161414bd6542849f719ac7a03750a4?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
+        <div class="looms__lab">Done right</div>
+        <details class="loom">
+          <summary>Correct 1</summary>
+          <div class="loom__frame">
+            <iframe src="https://www.loom.com/embed/0c0aa46d3f774fbe91b299d7523f3c53?hideEmbedTopBar=true" frameborder="0"
+              allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </details>
       </div>
 
       <h3>The thread running through all seven</h3>
@@ -1209,9 +1423,9 @@ let phase = 'read';   // 'read' = material screen, 'quiz' = check screen
 function load(){
   try{
     const r = JSON.parse(localStorage.getItem(KEY));
-    if(r && typeof r === 'object') return {name:r.name||'', done:Array.isArray(r.done)?r.done:[], finished:!!r.finished};
+    if(r && typeof r === 'object') return {name:r.name||'', done:Array.isArray(r.done)?r.done:[], finished:!!r.finished, signoff:r.signoff||null};
   }catch(e){}
-  return {name:'', done:[], finished:false};
+  return {name:'', done:[], finished:false, signoff:null};
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }
@@ -1269,7 +1483,7 @@ function paintRail(){
 function screenStart(){
   return `<div class="card">
     <div class="u eyebrow">Before you begin</div>
-    <h1>Field Operations Onboarding</h1>
+    <h1>Teleoperator Onboarding</h1>
     <p class="lede">${MODULES.length} modules, each ending in a short check. You can't move
     forward until the check is passed, and you can retry as many times as you need.</p>
     <label class="field">
@@ -1303,17 +1517,126 @@ function screenRead(i){
       <div>
         <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Next</div>
         <p style="margin:0 0 4px;font-family:var(--display);font-weight:600;font-size:17px">
-          ${done ? 'Comprehension check — already cleared' : 'Comprehension check'}
+          ${(m.unlock || !m.quiz.length) ? (done ? 'Practical assessment — cleared' : 'Practical assessment') : (done ? 'Comprehension check — already cleared' : 'Comprehension check')}
         </p>
-        <p class="note" style="margin:0">${m.quiz.length} question${m.quiz.length>1?'s':''}. The material
-        isn't on screen during the check, so read it properly first. You'll be told if something is wrong, but not which one — unlimited attempts.</p>
+        <p class="note" style="margin:0">${m.unlock
+          ? 'No questions — your ' + esc(m.unlock.role.toLowerCase()) + ' unlocks this one after watching you do it.'
+          : !m.quiz.length
+          ? 'No check on this one — it is assessed in person by your instructor.'
+          : m.quiz.length + ' question' + (m.quiz.length>1?'s':'') + '. The material isn\'t on screen during the check, so read it properly first. You\'ll be told if something is wrong, but not which one — unlimited attempts.'}</p>
       </div>
-      <button class="btn" id="toQuizBtn">${done ? 'Retake the check' : 'Start the check'}</button>
+      <button class="btn" id="toQuizBtn">${m.unlock ? (done ? 'View sign-off' : 'Go to instructor unlock') : !m.quiz.length ? 'Continue' : (done ? 'Retake the check' : 'Start the check')}</button>
     </div>`;
+}
+
+function screenSignoff(){
+  return `
+    <div class="u eyebrow">Final step</div>
+    <h1>Instructor sign-off</h1>
+    <p class="lede">All ${MODULES.length} modules are complete. Your ${SIGNOFF.role.toLowerCase()}
+    signs off here, and your certificate is issued.</p>
+    <section class="quiz" id="quiz">
+      <div class="quiz__head">
+        <span class="u">${esc(SIGNOFF.role)} sign-off</span>
+        <span class="u">Required for certificate</span>
+      </div>
+      <h2>To be completed by the ${esc(SIGNOFF.role.toLowerCase())}</h2>
+      <p class="note" style="margin-bottom:20px">Trainee: <strong>${esc(S.name)}</strong>. Hand the
+      device over — the rest of this page is theirs.</p>
+
+      <label class="opt" style="align-items:flex-start;margin-bottom:16px">
+        <input type="checkbox" id="signChk">
+        <span>${esc(SIGNOFF.statement)}</span>
+      </label>
+
+      <label class="field" style="margin-top:0">
+        <span class="u" style="color:var(--ink-soft)">${esc(SIGNOFF.role)} name</span>
+        <input id="signWho" type="text" placeholder="Full name — as it should appear on the certificate">
+      </label>
+
+      <label class="field">
+        <span class="u" style="color:var(--ink-soft)">${esc(SIGNOFF.role)} passcode</span>
+        <input id="signCode" type="password" placeholder="Given to instructors only">
+      </label>
+
+      <div class="field" style="margin-bottom:0">
+        <span class="u" style="color:var(--ink-soft)">Signature</span>
+        <div class="sigpad">
+          <canvas id="sigCanvas" width="900" height="260"></canvas>
+          <button type="button" class="sigpad__clear" id="sigClear">Clear</button>
+        </div>
+        <p class="note" style="margin:6px 0 0">Sign with a finger, stylus or mouse.</p>
+      </div>
+
+      <div class="btnrow" style="margin-top:22px">
+        <button class="btn" id="signBtn">Sign off and issue certificate</button>
+      </div>
+      <div class="verdict hidden" id="verdict"></div>
+    </section>`;
+}
+
+let sigPad = null;
+function initSigPad(){
+  const c = document.getElementById('sigCanvas');
+  if(!c){ sigPad = null; return; }
+  const ctx = c.getContext('2d');
+  ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0F1E2E';
+  let drawing = false, dirty = false;
+  const pos = e => {
+    const r = c.getBoundingClientRect();
+    return [(e.clientX - r.left) * (c.width / r.width), (e.clientY - r.top) * (c.height / r.height)];
+  };
+  c.addEventListener('pointerdown', e => {
+    e.preventDefault(); drawing = true; dirty = true;
+    try { c.setPointerCapture(e.pointerId); } catch(err){}
+    const [x,y] = pos(e); ctx.beginPath(); ctx.moveTo(x,y);
+  });
+  c.addEventListener('pointermove', e => {
+    if(!drawing) return;
+    e.preventDefault();
+    const [x,y] = pos(e); ctx.lineTo(x,y); ctx.stroke();
+  });
+  c.addEventListener('pointerup', () => { drawing = false; });
+  c.addEventListener('pointercancel', () => { drawing = false; });
+  const clr = document.getElementById('sigClear');
+  if(clr) clr.onclick = () => { ctx.clearRect(0,0,c.width,c.height); dirty = false; };
+  sigPad = { isEmpty: () => !dirty, data: () => c.toDataURL('image/png') };
+}
+
+function screenUnlock(i){
+  const m = MODULES[i], done = cleared(i), u = m.unlock;
+  return `
+    <div class="u eyebrow">Module ${String(i+1).padStart(2,'0')} — practical assessment</div>
+    <h1>${esc(m.title)}</h1>
+    <section class="quiz" id="quiz">
+      <div class="quiz__head">
+        <span class="u">${esc(u.role)} unlock</span>
+        <span class="u">${done ? 'Cleared' : 'Required to continue'}</span>
+      </div>
+      <h2>${done ? 'Already unlocked' : 'To be completed by the ' + esc(u.role.toLowerCase())}</h2>
+      <p class="note" style="margin-bottom:20px">Trainee: <strong>${esc(S.name)}</strong>.
+      Hand the device to your ${esc(u.role.toLowerCase())}.</p>
+      <label class="opt" style="align-items:flex-start;margin-bottom:16px">
+        <input type="checkbox" id="unlockChk" ${done ? 'checked disabled' : ''}>
+        <span>${esc(u.statement)}</span>
+      </label>
+      ${done ? '' : `
+      <label class="field" style="margin-top:0;margin-bottom:0">
+        <span class="u" style="color:var(--ink-soft)">${esc(u.role)} passcode</span>
+        <input id="unlockCode" type="password" placeholder="Given to instructors only">
+      </label>`}
+      <div class="btnrow" style="margin-top:22px">
+        ${done ? '' : `<button class="btn" id="markBtn">Unlock module</button>`}
+        <button class="btn btn--ghost" id="backBtn">Back to the material</button>
+        ${done ? `<button class="btn btn--go" id="fwdBtn">${i+1 < MODULES.length ? 'Next module' : 'Continue'}</button>` : ''}
+      </div>
+      <div class="verdict hidden" id="verdict"></div>
+    </section>`;
 }
 
 function screenQuiz(i){
   const m = MODULES[i];
+  if(m.unlock) return screenUnlock(i);
   const qs = m.quiz.map((q,qi) => `
     <div class="q" data-q="${qi}">
       <p class="q__text">${qi+1}. ${esc(q.q)}</p>
@@ -1347,20 +1670,40 @@ function screenQuiz(i){
 
 function screenCert(){
   const d = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const sg = S.signoff || null;
   return `
     <div class="cert">
-      <div class="cert__seal">Frodobots — Field Operations</div>
-      <div class="cert__line"></div>
-      <p class="note" style="margin:0">This confirms that</p>
+      <div class="cert__rule"></div>
+      <div class="cert__brand">Bitrobot</div>
+      <div class="cert__disc">Certificate of Completion</div>
+
+      <p class="cert__intro">This is to certify that</p>
       <div class="cert__name">${esc(S.name)}</div>
-      <p class="note" style="margin:0 auto;max-width:34ch">has completed all ${MODULES.length} onboarding
-      modules and passed every comprehension check.</p>
-      <div class="cert__line"></div>
-      <div class="cert__meta">
-        Completed ${d}<br>
-        Verification code
-        <div class="cert__code">${code()}</div>
+      <p class="cert__intro">has completed all ${MODULES.length} modules of field operations
+      onboarding, passed every comprehension check, and is qualified to operate as a</p>
+      <div class="cert__title">Teleoperator</div>
+
+      ${sg ? `<div class="cert__sig">
+        <div class="cert__lab cert__lab--top">Confirmed by</div>
+        <img src="${sg.sig}" alt="Signature of ${esc(sg.who)}">
+        <div class="cert__signer">${esc(sg.who)}</div>
+        <div class="cert__lab">${esc(SIGNOFF.role)}</div>
+        <p class="cert__attest">Confirmed by ${esc(sg.who)}, ${esc(SIGNOFF.role.toLowerCase())}, who
+        assessed this trainee in person and signed above on ${esc(sg.date)}.</p>
+      </div>` : ''}
+
+      <div class="cert__foot">
+        <div>
+          <div class="cert__lab">Date</div>
+          <div class="cert__val">${d}</div>
+        </div>
+
+        <div>
+          <div class="cert__lab">Verification</div>
+          <div class="cert__val cert__code">${code()}</div>
+        </div>
       </div>
+      <div class="cert__rule"></div>
     </div>
     <div class="btnrow noprint" style="margin-top:26px">
       <button class="btn" id="printBtn">Save or print certificate</button>
@@ -1371,15 +1714,74 @@ function screenCert(){
 }
 
 /* ---------- marking ---------- */
+function clearModule(i){
+  if(!cleared(i)){ S.done.push(i); S.done.sort((a,b)=>a-b); save(); }
+  paintMeter(); paintRail();
+  if(!document.getElementById('fwdBtn')){
+    const b = document.createElement('button');
+    b.className = 'btn btn--go'; b.id = 'fwdBtn';
+    b.textContent = i+1 < MODULES.length ? 'Next module' : 'View certificate';
+    b.onclick = forward;
+    document.querySelector('.btnrow').appendChild(b);
+  }
+}
+
+function markSignoff(){
+  const v = document.getElementById('verdict');
+  v.classList.remove('hidden');
+  const who = document.getElementById('signWho').value.trim();
+  const codeIn = document.getElementById('signCode').value.trim();
+  const ticked = document.getElementById('signChk').checked;
+
+  if(!ticked || !who){
+    v.dataset.v = 'fail';
+    v.textContent = 'Tick the confirmation and enter the ' + SIGNOFF.role.toLowerCase() + ' name.';
+    return;
+  }
+  if(!sigPad || sigPad.isEmpty()){
+    v.dataset.v = 'fail';
+    v.textContent = 'A signature is required.';
+    return;
+  }
+  S.signoff = {
+    who: who,
+    sig: sigPad.data(),
+    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+  };
+  S.finished = true;
+  save();
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function markUnlock(i){
+  const u = MODULES[i].unlock;
+  const v = document.getElementById('verdict');
+  v.classList.remove('hidden');
+  if(!document.getElementById('unlockChk').checked){
+    v.dataset.v = 'fail';
+    v.textContent = 'Tick the confirmation first.';
+    return;
+  }
+  if(document.getElementById('unlockCode').value.trim().toUpperCase() !== String(u.code).toUpperCase()){
+    v.dataset.v = 'fail';
+    v.textContent = 'That passcode is not correct. Only an ' + u.role.toLowerCase() + ' can unlock this module.';
+    return;
+  }
+  v.dataset.v = 'pass';
+  v.textContent = 'Unlocked. Module ' + String(i+1).padStart(2,'0') + ' cleared.';
+  clearModule(i);
+}
+
 function mark(i){
-  const m = MODULES[i], quiz = document.getElementById('quiz');
+  const m = MODULES[i];
+  if(m.unlock) return markUnlock(i);
+  const quiz = document.getElementById('quiz');
   let right = 0, answered = 0;
 
   m.quiz.forEach((q,qi) => {
     const block = quiz.querySelector('[data-q="'+qi+'"]');
-    // clear any marking from a previous attempt
     block.querySelectorAll('.opt').forEach(o => { o.classList.remove('ok','no'); o.querySelector('.flag').textContent = ''; });
-    block.querySelectorAll('.q__hint').forEach(n => n.remove());
     const picked = block.querySelector('input:checked');
     if(!picked) return;
     answered++;
@@ -1398,15 +1800,7 @@ function mark(i){
   if(right / m.quiz.length >= PASS_MARK){
     v.dataset.v = 'pass';
     v.textContent = 'All correct. Module ' + String(i+1).padStart(2,'0') + ' cleared.';
-    if(!cleared(i)){ S.done.push(i); S.done.sort((a,b)=>a-b); save(); }
-    paintMeter(); paintRail();
-    if(!document.getElementById('fwdBtn')){
-      const b = document.createElement('button');
-      b.className = 'btn btn--go'; b.id = 'fwdBtn';
-      b.textContent = i+1 < MODULES.length ? 'Next module' : 'View certificate';
-      b.onclick = forward;
-      document.querySelector('.btnrow').appendChild(b);
-    }
+    clearModule(i);
   }else{
     v.dataset.v = 'fail';
     v.textContent = 'Not all of these are right. Go back through the material, or ask your instructor, ' +
@@ -1440,13 +1834,24 @@ function render(){
     return;
   }
 
-  if(S.finished && S.done.length === MODULES.length){
+  const allDone = S.done.length === MODULES.length;
+
+  // every module complete but no instructor sign-off yet
+  if(allDone && !S.signoff){
+    stage.innerHTML = screenSignoff();
+    paintRail();
+    initSigPad();
+    document.getElementById('signBtn').onclick = markSignoff;
+    return;
+  }
+
+  if(S.finished && allDone && S.signoff){
     stage.innerHTML = screenCert();
     paintRail();
     document.getElementById('printBtn').onclick = () => window.print();
     document.getElementById('resetBtn').onclick = () => {
       if(confirm('This clears all progress on this device and starts again from module 01.')){
-        S = {name:'',done:[],finished:false}; save(); openIdx = 0; phase = 'read'; render();
+        S = {name:'',done:[],finished:false,signoff:null}; save(); openIdx = 0; phase = 'read'; render();
       }
     };
     return;
@@ -1456,6 +1861,12 @@ function render(){
     stage.innerHTML = screenRead(openIdx);
     paintRail();
     document.getElementById('toQuizBtn').onclick = () => {
+      const cur = MODULES[openIdx];
+      if(!cur.quiz.length && !cur.unlock){
+        if(!cleared(openIdx)){ S.done.push(openIdx); S.done.sort((a,b)=>a-b); save(); }
+        forward();
+        return;
+      }
       phase = 'quiz'; render(); window.scrollTo({top:0,behavior:'smooth'});
     };
     return;
@@ -1463,7 +1874,9 @@ function render(){
 
   stage.innerHTML = screenQuiz(openIdx);
   paintRail();
-  document.getElementById('markBtn').onclick = () => mark(openIdx);
+  initSigPad();
+  const mk = document.getElementById('markBtn');
+  if(mk) mk.onclick = () => mark(openIdx);
   document.getElementById('backBtn').onclick = () => {
     phase = 'read'; render(); window.scrollTo({top:0,behavior:'smooth'});
   };
