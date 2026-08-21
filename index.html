@@ -257,6 +257,21 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
   margin:0 auto;max-width:40ch;
 }
 
+.roles{display:grid;gap:12px;margin-top:26px}
+@media(min-width:620px){.roles{grid-template-columns:1fr 1fr}}
+.role{
+  display:block;text-align:left;background:var(--paper);border:1px solid var(--rule);
+  border-left:3px solid var(--signal);padding:20px;cursor:pointer;font-family:var(--body);
+  color:var(--ink);transition:background .15s,border-color .15s;
+}
+.role:hover{background:#fff;border-left-color:var(--clear)}
+.role:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.role__tag{display:block;color:var(--signal);margin-bottom:8px}
+.role__n{
+  display:block;font-family:var(--display);font-size:19px;font-weight:600;
+  letter-spacing:-.01em;margin-bottom:8px;
+}
+.role__blurb{display:block;font-size:15px;line-height:1.55;color:var(--ink-soft)}
 .sigpad{position:relative;border:1px solid var(--rule);background:#fff;max-width:420px}
 .sigpad canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
 .sigpad__clear{
@@ -289,7 +304,7 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
 
 <header class="masthead">
   <div class="masthead__in">
-    <div class="mark">BITROBOT <span>/ Teleoperator Onboarding</span></div>
+    <div class="mark">BITROBOT <span id="markSub">/ Onboarding</span></div>
     <div class="meter">
       <span class="u meter__num" id="meterNum">0 / 0</span>
       <div class="meter__track"><div class="meter__fill" id="meterFill"></div></div>
@@ -333,7 +348,12 @@ const SIGNOFF = {
   statement: "I confirm that this trainee has completed onboarding, demonstrated they can carry and operate Homie safely, and is ready to work unsupervised."
 };
 
-const MODULES = [
+const TRACKS = {
+  teleoperator: {
+    label: "Teleoperator",
+    blurb: "You operate Homie in the field \u2014 hardware, startup, VR control and data quality.",
+    cert: "Teleoperator",
+    modules: [
   {
     title: "The mission, the vocabulary, and how you're measured",
     lede: "Before you touch a controller, you need the shape of the job and the words the team uses to describe it.",
@@ -1452,7 +1472,758 @@ const MODULES = [
       }
     ]
   },
-];
+]
+  },
+
+  annotator: {
+    label: "Annotator",
+    blurb: "You review robot recordings and label what happened \u2014 keywords, timestamps and QC.",
+    cert: "Data Annotator",
+    modules: [
+  {
+    title: "Introduction to the annotation team",
+    lede: "What a data annotator does, who you work with, and what's expected of you.",
+    video: "",
+    body: `
+      <h3>Welcome</h3>
+      <p>As a <strong>Data Annotator</strong>, you help build high-quality data from the videos our
+      robots collect. You review robot video data and create accurate annotations describing what the
+      robot is doing. The quality of your annotations directly affects the quality of the dataset.</p>
+
+      <h3>What a data annotator does</h3>
+      <p>You review video data collected by robots and identify the actions and events in each
+      recording. Your responsibilities:</p>
+      <ul>
+        <li>Reviewing robot video data</li>
+        <li>Identifying robot actions</li>
+        <li>Applying the correct annotation keywords</li>
+        <li>Setting accurate timestamps</li>
+        <li>Following the team's annotation standards</li>
+        <li>Identifying failures and unusual situations</li>
+        <li>Correcting errors identified by QC</li>
+        <li>Completing assigned work within the expected timeframe</li>
+      </ul>
+      <p><strong>Example.</strong> A robot moves to the table, reaches for a cup, picks up the cup,
+      and places it on the counter. Your job is to watch carefully and annotate those actions
+      according to the team's standards.</p>
+
+      <h3>Why your work matters</h3>
+      <p>The videos contain valuable information about how robots interact with real environments.
+      Your annotations turn raw video into structured, usable data.</p>
+      <p><em>Better annotation → better data → better robot learning</em></p>
+      <p>Even a small annotation mistake affects the quality of the dataset. Accuracy is not
+      negotiable.</p>
+
+      <h3>Who you work with</h3>
+      <ul>
+        <li><strong>Annotation Team Lead</strong> — instructions, assignments, and support</li>
+        <li><strong>QC Team</strong> — reviews completed annotations and identifies errors</li>
+        <li><strong>Other Annotators</strong> — keeping standards consistent across the team</li>
+      </ul>
+
+      <h3>What's expected of you</h3>
+      <ul>
+        <li><strong>Accuracy</strong> — annotations must correctly represent what happens in the video.</li>
+        <li><strong>Productivity</strong> — complete assigned work efficiently while holding quality.</li>
+        <li><strong>Attendance</strong> — follow your schedule and record your hours properly.</li>
+        <li><strong>Follow annotation standards</strong> — approved keywords, taxonomy, timestamping
+        rules. Consistency across the team matters enormously.</li>
+        <li><strong>Follow instructions</strong> — including updates to procedures and standards.</li>
+        <li><strong>Correct QC errors</strong> — review, understand, correct, resubmit. QC feedback
+        isn't only about fixing one mistake; it stops you repeating it.</li>
+      </ul>
+      <p>Being a good annotator isn't about completing the most episodes. It's the balance of
+      <strong>accuracy, productivity and consistency</strong>.</p>`,
+    quiz: [
+      {
+        q: "What is the main purpose of a Data Annotator?",
+        options: [
+          "Operate the robot remotely",
+          "Annotate video data collected by robots",
+          "Repair the robot",
+          "Manage employee attendance"
+        ],
+        answer: 1,
+        why: "You review the recordings and describe what the robot did."
+      },
+      {
+        q: "Which of the following is an important expectation for a Data Annotator?",
+        options: [
+          "Accuracy",
+          "Productivity",
+          "Following annotation standards",
+          "All of the above"
+        ],
+        answer: 3,
+        why: "All three, held together. None of them is worth sacrificing for the others."
+      },
+      {
+        q: "What should you do if you are unsure about an annotation?",
+        options: [
+          "Guess",
+          "Skip all similar episodes",
+          "Follow the team's clarification process and ask",
+          "Create your own keyword"
+        ],
+        answer: 2,
+        why: "Ask. Guessing and inventing keywords both corrupt the dataset."
+      },
+      {
+        q: "What should you do when QC identifies an error?",
+        options: [
+          "Ignore it",
+          "Delete the annotation",
+          "Review and correct the error",
+          "Ask another annotator to fix it"
+        ],
+        answer: 2,
+        why: "Review, understand, correct, resubmit — and learn from it."
+      }
+    ]
+  },
+  {
+    title: "Starting your workday",
+    lede: "Clocking in, finding your queue, and opening the right episode.",
+    video: "",
+    body: `
+      <h3>Clock in</h3>
+      <p>Before starting any annotation work, clock in through the Project Homie Annotation System.
+      Your credentials come from your team leader or manager.</p>
+      <div class="handoff" style="border-left-color:var(--clear);margin-bottom:26px">
+        <div>
+          <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Annotation System</div>
+          <p class="note" style="margin:0">Go to <strong>Time Log</strong> and click
+          <strong>Clock In</strong>. The system records your start time.</p>
+        </div>
+        <a class="btn" href="https://project-homie-annotationsystem.vercel.app/" target="_blank" rel="noopener">Open system</a>
+      </div>
+      <figure class="fig"><img src="assets/ann-01.jpg" alt="Clock In button in the Time Log"></figure>
+
+      <h3>Refresh the system</h3>
+      <p>After clocking in, refresh the website. The refresh is what pulls the latest assignment data
+      and updates your queue — without it you may be looking at stale work.</p>
+
+      <h3>Check your assigned episodes</h3>
+      <p>Go to the <strong>Episodes</strong> tab and find <strong>My Queue</strong>. This shows the
+      episodes currently assigned to you.</p>
+      <figure class="fig"><img src="assets/ann-02.jpg" alt="My Queue in the Episodes tab"></figure>
+      <p>You can see episodes assigned to you, ones you've completed, ones still pending, and the bot
+      associated with each. A queue showing <strong>5/12 DONE</strong> means five of your twelve
+      assigned episodes are finished. Click an episode to open it.</p>
+
+      <h3>Automatic episode assignment</h3>
+      <p>You don't pick your own episodes — the system assigns them. Work from <strong>My Queue</strong>,
+      not from the full episode list.</p>
+      <ul>
+        <li>Initial assignment: <strong>10 episodes</strong></li>
+        <li>After completing those: <strong>5 more</strong></li>
+        <li>And it keeps refilling in batches of <strong>5</strong></li>
+      </ul>
+
+      <h3>Checking which bot you're on</h3>
+      <p>Two ways. <strong>Episodes → My Queue</strong> shows the bot for each assigned episode — the
+      easiest place to look.</p>
+      <figure class="fig"><img src="assets/ann-03.jpg" alt="Bot shown against assigned episodes in My Queue"></figure>
+      <p>The <strong>Production</strong> tab gives an overview of all bots and current progress across
+      annotators — Alpha, Charlie, Echo, Fox, Godzilla, Hugo, Igor, Jackie, Kilo, Llama.</p>
+      <figure class="fig"><img src="assets/ann-04.jpg" alt="Production tab showing bots and annotator progress"></figure>
+
+      <h3>Your daily KPI</h3>
+      <p>The general target is <strong>21 episodes per day</strong>. Whether it's reachable depends on
+      how much data is available — if there aren't enough episodes, you won't hit 21, and that's
+      expected.</p>
+      <p><strong>The KPI is a productivity target, not a reason to sacrifice quality.</strong> Don't
+      rush episodes to reach a number.</p>
+
+      <h3>Open Robot Dataviz</h3>
+      <p>Once you know your bot and date, move to Robot Dataviz. Credentials come from your Team Lead
+      or Manager.</p>
+      <div class="handoff" style="border-left-color:var(--clear);margin-bottom:26px">
+        <div>
+          <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Robot Dataviz</div>
+          <p class="note" style="margin:0">Open Robot Dataviz and click <strong>Episodes</strong>.</p>
+        </div>
+        <a class="btn" href="https://humanoid-dataset.netlify.app" target="_blank" rel="noopener">Open Dataviz</a>
+      </div>
+      <figure class="fig"><img src="assets/ann-06.jpg" alt="Episodes section of Robot Dataviz"></figure>
+      <p>On the left you'll see bots, dates, and available episodes.</p>
+
+      <h3>Find your assigned data</h3>
+      <p>Use the assignment from the Annotation System. If it shows <strong>Bot: Alpha, Date: August
+      19</strong>, then in Dataviz: click Alpha, click August, find August 19, and open the episode
+      you were assigned.</p>
+      <figure class="fig"><img src="assets/ann-09.jpg" alt="Selecting the bot in Robot Dataviz"></figure>
+      <figure class="fig"><img src="assets/ann-11.jpg" alt="Selecting the date"></figure>
+      <figure class="fig"><img src="assets/ann-12.jpg" alt="Selecting the assigned episode"></figure>
+
+      <h3>Open the MCAP</h3>
+      <p>After selecting the episode, the <strong>MCAP</strong> appears. Click it to open the robot's
+      recorded data.</p>
+      <figure class="fig"><img src="assets/ann-13.jpg" alt="Opening the MCAP"></figure>
+      <p><strong>Bot → Date → Episode → MCAP.</strong> Always confirm all four before you start
+      annotating — annotating the wrong episode wastes the whole session.</p>`,
+    quiz: [
+      {
+        q: "What should you do before checking your assignment?",
+        options: ["Open Robot Dataviz", "Clock in", "Start annotating", "Open QC"],
+        answer: 1,
+        why: "Clock in first — the assignment data follows from it."
+      },
+      {
+        q: "Why do you refresh after clocking in?",
+        options: [
+          "To log out",
+          "To change your password",
+          "To pull the latest assignment data",
+          "To submit an episode"
+        ],
+        answer: 2,
+        why: "Without the refresh you may be looking at a stale queue."
+      },
+      {
+        q: "Where do you check your assigned episodes?",
+        options: ["QC", "Production only", "Episodes → My Queue", "Time Log"],
+        answer: 2,
+        why: "My Queue is your work. The full episode list isn't."
+      },
+      {
+        q: "How many episodes are initially assigned, and how many are added after those?",
+        options: [
+          "10 initially, then batches of 5",
+          "5 initially, then batches of 10",
+          "21 initially, then batches of 21",
+          "10 initially, then batches of 10"
+        ],
+        answer: 0,
+        why: "10 to start, then 5 at a time as you finish them."
+      },
+      {
+        q: "You're behind on the 21-episode daily target. What's the right response?",
+        options: [
+          "Work faster and accept more mistakes",
+          "Keep the quality standard — the KPI doesn't override accuracy",
+          "Mark episodes done without annotating them",
+          "Stop checking the keyword list to save time"
+        ],
+        answer: 1,
+        why: "The KPI is a target, not a licence to rush. Bad annotations cost more than a missed number."
+      }
+    ]
+  },
+  {
+    title: "Understanding the workspace",
+    lede: "The four areas of the annotation page, and what each is for.",
+    video: "",
+    body: `
+      <h3>Know the workspace</h3>
+      <figure class="fig"><img src="assets/ann-14.jpg" alt="The annotation workspace with its four areas"></figure>
+      <ul>
+        <li><strong>Episode Explorer (left)</strong> — choose the correct bot, date, episode and MCAP.</li>
+        <li><strong>Camera Views (centre)</strong> — watch the robot from the head and wrist cameras.</li>
+        <li><strong>Timeline &amp; Playback (bottom)</strong> — play, pause, scrub, change speed.</li>
+        <li><strong>Annotations (right)</strong> — view, add, edit and save annotations.</li>
+      </ul>
+
+      <h3>Use the timeline</h3>
+      <figure class="fig"><img src="assets/ann-15.jpg" alt="Timeline and playback controls"></figure>
+      <p>The timeline is how you find the exact moment of an action. Play and pause to inspect, scrub
+      to a specific time, slow the playback down when an action is hard to see, and replay important
+      moments before labelling.</p>
+
+      <h3>Camera views</h3>
+      <figure class="fig"><img src="assets/ann-16.jpg" alt="Head and wrist camera views"></figure>
+      <ul>
+        <li><strong>Head camera</strong> — best for overall movement and navigation</li>
+        <li><strong>Left wrist camera</strong> — the left gripper</li>
+        <li><strong>Right wrist camera</strong> — the right gripper</li>
+      </ul>
+      <p>Check all cameras are available before you start. <strong>If a view is unclear or missing,
+      that's a failed annotation</strong> — there are specific fail keywords for it.</p>
+
+      <h3>The annotations panel</h3>
+      <figure class="fig"><img src="assets/ann-17.jpg" alt="The annotations panel"></figure>
+      <p>This is where your work is recorded. You can add an annotation with the <strong>+</strong>
+      button, choose the correct task keyword, edit an existing annotation, delete an incorrect one,
+      and save.</p>
+      <p><strong>Save your work before leaving the episode.</strong></p>`,
+    quiz: [
+      {
+        q: "What is the Episode Explorer on the left used for?",
+        options: [
+          "Editing annotations",
+          "Selecting the bot, date, episode and MCAP",
+          "Changing your account settings",
+          "Submitting QC errors"
+        ],
+        answer: 1,
+        why: "It's how you navigate to the right recording."
+      },
+      {
+        q: "Which camera views are available in the workspace?",
+        options: [
+          "Head, left wrist, and right wrist",
+          "Front, back, and side",
+          "Left hand and right hand only",
+          "Head camera only"
+        ],
+        answer: 0,
+        why: "Head for navigation and movement, the two wrist cameras for the grippers."
+      },
+      {
+        q: "An action is difficult to see clearly. What do you do?",
+        options: [
+          "Guess the action",
+          "Skip the episode immediately",
+          "Replay the moment, slow the playback, and use the other camera views",
+          "Create a random annotation"
+        ],
+        answer: 2,
+        why: "You have three cameras and variable playback speed. Use them before you decide."
+      },
+      {
+        q: "You open an episode and the right wrist camera view isn't available. What does that mean?",
+        options: [
+          "Annotate normally using the other two cameras",
+          "It counts as a failure and has its own fail keyword",
+          "Skip it and move to the next episode without recording anything",
+          "Wait for it to load and then continue"
+        ],
+        answer: 1,
+        why: "A missing view is a failure — 'no right wrist image' exists precisely for this."
+      }
+    ]
+  },
+  {
+    title: "Annotation keywords and when to use them",
+    lede: "Main, Sub, Fail and End — and the rule that catches everyone out.",
+    video: "",
+    body: `
+      <h3>The four annotation types</h3>
+      <p>The Master Keyword List is the source of truth for approved wording.</p>
+      <div class="handoff" style="border-left-color:var(--clear);margin-bottom:26px">
+        <div>
+          <div class="u" style="color:var(--ink-soft);margin-bottom:6px">Reference</div>
+          <p class="note" style="margin:0">Keep the Master Annotation Keyword List open while you
+          work. If a keyword isn't on it, it isn't approved.</p>
+        </div>
+        <a class="btn" href="https://docs.google.com/spreadsheets/d/1wZFf4sY_3V70CoMM3BwvBtJoKEdMLTdE8wwyaHOau8w/edit?gid=94125925#gid=94125925" target="_blank" rel="noopener">Open keyword list</a>
+      </div>
+      <ul>
+        <li><strong>Main Task</strong> — the overall task the robot is performing.</li>
+        <li><strong>Sub Task</strong> — an individual action within the Main Task.</li>
+        <li><strong>Fail</strong> — a failure, problem or special condition during the recording.</li>
+        <li><strong>End</strong> — marks the end of a Main Task or a Fail Task.</li>
+      </ul>
+      <p>Main = what is the robot doing? Sub = what action is it performing? Fail = what went wrong?
+      End = the task is finished.</p>
+
+      <h3>Main tasks and task codes</h3>
+      <p>Each Main Task has a code:</p>
+      <ul>
+        <li>TM19 — restocking fridge</li>
+        <li>TM53 — kitchen organization</li>
+        <li>TM51 — clothes washing</li>
+        <li>TM52 — clean up the room</li>
+        <li>TM02 — picking trash to rubbish bin</li>
+        <li>TM42 — setting the table</li>
+        <li>TM30 — hang keys on a hook</li>
+        <li>TM03 — hang hanger</li>
+        <li>TM05 — sweep floor</li>
+        <li>TM27 — move the pillow to the sofa from floor</li>
+      </ul>
+
+      <h3>Sub tasks</h3>
+      <p>Sub Tasks are the individual actions inside the Main Task. For <em>kitchen organization</em>
+      you might have: pick plate, place plate to sink, pick bowl, place bowl to sink. One Main Task
+      usually contains several Sub Tasks.</p>
+
+      <h3>Fail annotations — the rule that catches people out</h3>
+      <div class="warn">
+        <p><strong>Do not place a Fail annotation in the middle of an ongoing task sequence.</strong></p>
+        <p>If a failure happens during a task and that failure means the task set has failed, the
+        <em>whole task set</em> is failed. A failed task set doesn't mean the whole episode failed.</p>
+      </div>
+      <p>Say the robot is doing: pick trash → move to trash can → dump trash, and drops the item.</p>
+      <p>This is <strong>wrong</strong>:</p>
+      <ul>
+        <li>pick trash</li>
+        <li>move to trash can</li>
+        <li><em>item drop</em></li>
+        <li>dump trash</li>
+        <li>end</li>
+      </ul>
+
+      <h3>What to do when a task fails</h3>
+      <ol>
+        <li><strong>Identify the failure</strong> — which Fail keyword applies (e.g. <em>item drop</em>).</li>
+        <li><strong>Remove the annotations for that failed task set</strong> — delete the Main and Sub
+        Tasks you already created for it. A failed task must not remain as a normal successful sequence.</li>
+        <li><strong>Find the starting timestamp</strong> — go back to where the task set began.</li>
+        <li><strong>Mark the failure</strong> at that starting timestamp.</li>
+        <li><strong>Use the failure timestamp as the ending point</strong> — that's where the task set
+        ends unsuccessfully.</li>
+      </ol>
+
+      <h4>Worked example</h4>
+      <p>The robot starts <em>picking trash to rubbish bin</em> at <strong>10:15:20</strong>. It picks
+      up the trash, moves toward the can, and drops it at <strong>10:15:35</strong>.</p>
+      <p>The correct annotation is:</p>
+      <ul>
+        <li><strong>10:15:20</strong> — item drop</li>
+        <li><strong>10:15:35</strong> — end</li>
+      </ul>
+      <p>Fail annotations show a red indicator, so you can see at a glance which timestamps failed.</p>
+      <figure class="fig"><img src="assets/ann-18.jpg" alt="Fail annotation shown with a red indicator"></figure>
+      <figure class="fig"><img src="assets/ann-19.jpg" alt="Fail annotation in the timeline"></figure>
+
+      <h3>Fail keywords</h3>
+      <ul>
+        <li><code>item drop</code> — the robot drops an item</li>
+        <li><code>bot fell</code> — the robot fell</li>
+        <li><code>unfinished task – jump to another episode</code></li>
+        <li><code>unfinished task – recording stopped early</code></li>
+        <li><code>human intervention</code> — a person intervenes</li>
+        <li><code>no head image</code> / <code>no left wrist image</code> / <code>no right wrist image</code></li>
+        <li><code>camera lagging</code> / <code>head camera lagging</code> / <code>wrist camera lagging</code></li>
+        <li><code>frozen image</code></li>
+        <li><code>no MCAP</code></li>
+        <li><code>unnecessary action</code></li>
+        <li><code>bot resting</code></li>
+        <li><code>reset environment</code></li>
+      </ul>
+
+      <h3>The structure, in one line</h3>
+      <ul>
+        <li><strong>Successful task:</strong> Main → Sub → Sub → End</li>
+        <li><strong>Failed task:</strong> Fail → End</li>
+        <li><strong>Never:</strong> Main → Sub → Fail → Sub → End</li>
+      </ul>
+      <p>Every Main Task and every Failed Task ends with <strong>end</strong>.</p>
+
+      <h3>Use only approved keywords</h3>
+      <p>Don't invent keywords. If the approved keyword is <code>pick plate</code>, don't write "pick
+      up plate", "grab plate" or "picking up plate". Check the list first. If there's genuinely no
+      keyword for an action, tell the team lead so it can be added to the system.</p>`,
+    quiz: [
+      {
+        q: "A failure happens mid-task and the entire task set is considered failed. What do you do?",
+        options: [
+          "Add the Fail annotation between the Sub Tasks",
+          "Continue annotating normally",
+          "Remove the annotations for that task set and mark it as failed",
+          "Ignore the failure"
+        ],
+        answer: 2,
+        why: "The failed set is replaced by Fail → End. It doesn't stay as a normal sequence with a failure wedged in."
+      },
+      {
+        q: "When a task set fails, which timestamps matter?",
+        options: [
+          "Only the episode's starting timestamp",
+          "Where the task set started, and where the failure occurred",
+          "Only the end of the episode",
+          "The timestamp of the previous task"
+        ],
+        answer: 1,
+        why: "The Fail goes on the task's start time; the End goes on the moment of failure."
+      },
+      {
+        q: "Which sequence represents a normally completed task?",
+        options: [
+          "Main → Fail → Sub → End",
+          "Main → Sub → Sub → End",
+          "Fail → Main → Sub",
+          "Sub → Fail → End"
+        ],
+        answer: 1,
+        why: "Main, then the sub tasks that happened, then end."
+      },
+      {
+        q: "The approved keyword is 'pick plate'. The robot picks up a plate. What do you write?",
+        options: [
+          "pick up plate",
+          "grab plate",
+          "pick plate",
+          "picking up plate"
+        ],
+        answer: 2,
+        why: "Exactly as approved. Near-misses break consistency across the team and make the data harder to use."
+      },
+      {
+        q: "You see an action with no matching keyword on the master list. What's the correct move?",
+        options: [
+          "Write your own keyword that describes it best",
+          "Tell the team lead so it can be added to the system",
+          "Use the closest keyword even if it's wrong",
+          "Mark the whole episode as failed"
+        ],
+        answer: 1,
+        why: "The list is the source of truth. Extending it is a team lead decision, not an individual one."
+      }
+    ]
+  },
+  {
+    title: "Creating annotations in Dataviz",
+    lede: "The seven steps from watching the MCAP to a confirmed annotation.",
+    video: "",
+    body: `
+      <h3>Start by watching the MCAP</h3>
+      <p>Open your assigned MCAP and watch what the robot actually does before creating anything. Use
+      the camera views, the timeline, play/pause, playback speed and replay.</p>
+      <p><strong>Always annotate what actually happens, not what you expect the robot to do.</strong></p>
+
+      <h3>Find the action, then the timestamp</h3>
+      <p>When you spot an action to annotate: watch it carefully, replay if needed, check the camera
+      views, and identify the correct approved keyword. Then use the timeline to find the exact point.
+      If the action happens quickly, slow the recording down and review it again.</p>
+      <figure class="fig"><img src="assets/ann-20.jpg" alt="Using the timeline to find the exact timestamp"></figure>
+
+      <h3>Create the annotation</h3>
+      <p><strong>Step 1.</strong> Go to the Annotations panel.</p>
+      <figure class="fig"><img src="assets/ann-21.jpg" alt="The annotations panel"></figure>
+      <p><strong>Step 2.</strong> Click the <strong>+</strong> button. A new entry appears.</p>
+      <figure class="fig"><img src="assets/ann-22.jpg" alt="The plus button"></figure>
+      <figure class="fig"><img src="assets/ann-23.jpg" alt="A new annotation entry"></figure>
+      <p><strong>Step 3.</strong> Check the timestamp matches the action you're annotating.</p>
+      <figure class="fig"><img src="assets/ann-24.jpg" alt="Checking the timestamp"></figure>
+      <p><strong>Step 4.</strong> Click <strong>Select Task</strong>.</p>
+      <figure class="fig"><img src="assets/ann-25.jpg" alt="Select Task"></figure>
+      <p><strong>Step 5.</strong> Search for and select the correct approved keyword.</p>
+      <figure class="fig"><img src="assets/ann-26.jpg" alt="Searching the approved keywords"></figure>
+      <p><strong>Step 6.</strong> Review the annotation.</p>
+      <figure class="fig"><img src="assets/ann-27.jpg" alt="Reviewing the annotation"></figure>
+      <p><strong>Step 7.</strong> Click the green ✓ to confirm.</p>
+      <figure class="fig"><img src="assets/ann-28.jpg" alt="Confirming with the green tick"></figure>
+
+      <h3>Worked examples</h3>
+      <figure class="fig">
+        <img src="assets/ann-29.jpg" alt="Annotated task: move the pillow to the sofa from floor">
+        <figcaption>Move the pillow to the sofa from floor.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/ann-30.jpg" alt="Annotated task: sweep floor">
+        <figcaption>Sweep floor.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/ann-31.jpg" alt="Annotated task: clothes washing">
+        <figcaption>Clothes washing.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/ann-32.jpg" alt="Annotated task: hang keys on a hook">
+        <figcaption>Hang keys on a hook.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/ann-33.jpg" alt="Fail annotation: bot resting">
+        <figcaption>Fail annotation — bot resting.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/ann-34.jpg" alt="Fail annotation: item drop">
+        <figcaption>Fail annotation — item drop.</figcaption>
+      </figure>
+
+      <h3>Review before you save</h3>
+      <p>Run through the whole task sequence and ask:</p>
+      <ul>
+        <li>Is the correct Main Task present?</li>
+        <li>Did I annotate the actions that actually happened, with the correct keywords?</li>
+        <li>Did I add an <code>end</code>?</li>
+        <li>Did a failure occur — and if so, did I follow the failed-task procedure?</li>
+      </ul>
+
+      <h3>Editing and deleting</h3>
+      <p>Use the <strong>edit/pencil</strong> button to correct a timestamp, Main Task, Sub Task or
+      other detail. Review it again afterwards.</p>
+      <figure class="fig"><img src="assets/ann-35.jpg" alt="Editing an annotation"></figure>
+      <p>Use the <strong>delete/trash</strong> button for annotations that shouldn't exist. Confirm
+      it's actually wrong first. Remember that a failed task means removing the <em>entire</em> task
+      set's annotations.</p>
+      <figure class="fig"><img src="assets/ann-36.jpg" alt="Deleting an annotation"></figure>
+
+      <h3>Save</h3>
+      <p>Click <strong>Save Annotations</strong>. Always save before leaving the episode.</p>
+      <figure class="fig"><img src="assets/ann-37.jpg" alt="Save Annotations"></figure>`,
+    quiz: [
+      {
+        q: "What is the required structure for a normal completed task?",
+        options: [
+          "Sub → Main → End",
+          "Main → Sub Task(s) → End",
+          "Main → Fail → Sub",
+          "Sub → End"
+        ],
+        answer: 1,
+        why: "Main task, the sub tasks that happened, then end."
+      },
+      {
+        q: "You created 'pick plate' and 'place plate to sink'. What must come before these Sub Tasks?",
+        options: ["A Fail annotation", "A Main Task", "Another episode", "A QC comment"],
+        answer: 1,
+        why: "Sub Tasks live inside a Main Task. Without it the sequence is incomplete."
+      },
+      {
+        q: "What do you add after the final Sub Task of a successfully completed task?",
+        options: ["item drop", "bot fell", "end", "no MCAP"],
+        answer: 2,
+        why: "Every Main Task and every Failed Task closes with 'end'."
+      },
+      {
+        q: "The robot does something you didn't expect but the recording is clear. What do you annotate?",
+        options: [
+          "What the robot was supposed to do",
+          "What actually happened in the recording",
+          "Nothing — skip the section",
+          "The closest task from the task code list"
+        ],
+        answer: 1,
+        why: "Annotate what happens, not what you expect. The dataset is a record of reality."
+      },
+      {
+        q: "You've finished annotating and reviewed the sequence. What's the last thing you do in Dataviz?",
+        options: [
+          "Close the browser",
+          "Mark the episode Done in the Annotation System",
+          "Click Save Annotations",
+          "Clock out"
+        ],
+        answer: 2,
+        why: "Save first. Marking it Done before saving loses the work."
+      }
+    ]
+  },
+  {
+    title: "Completing your workday",
+    lede: "Marking episodes done, checking progress, and clocking out.",
+    video: "",
+    body: `
+      <h3>Mark the episode as done</h3>
+      <p>After finishing an episode in Dataviz: return to the Annotation System, go to the
+      <strong>Episodes</strong> tab, find the episode, and check the <strong>Done</strong> checkbox.</p>
+      <figure class="fig"><img src="assets/ann-38.jpg" alt="The Done checkbox in the Episodes tab"></figure>
+      <p>Only mark an episode Done after you have finished the annotation, reviewed your work, and
+      <strong>saved</strong> it in Dataviz. In that order.</p>
+
+      <h3>Continue with your queue</h3>
+      <p>Return to your queue and take the next episode. The system refills it — 10 to start, then 5
+      at a time. Always check <strong>My Queue</strong> for what's left.</p>
+      <figure class="fig"><img src="assets/ann-39.jpg" alt="My Queue showing remaining assigned episodes"></figure>
+
+      <h3>Check your progress</h3>
+      <p>The <strong>Dashboard</strong> shows your current production and progress. Use it to
+      understand how your day is going.</p>
+      <figure class="fig"><img src="assets/ann-40.jpg" alt="The Dashboard"></figure>
+
+      <h3>If you can't finish everything</h3>
+      <p>Sometimes you won't complete every assigned episode in your shift. That's fine —
+      <strong>don't work past your scheduled hours to clear the queue.</strong></p>
+      <p>When you're ready to finish: complete as many as you can, make sure the finished ones are
+      marked Done, go to <strong>Time Log</strong>, and click <strong>Clock Out</strong>.</p>
+      <figure class="fig"><img src="assets/ann-41.jpg" alt="Clock Out in the Time Log"></figure>
+      <p>After you clock out, unfinished assigned episodes are automatically transferred back to the
+      <strong>Backlog</strong>, where freelancers pick them up. You don't need to move anything
+      manually — the system handles it.</p>`,
+    quiz: [
+      {
+        q: "What do you do after finishing and saving an episode in Dataviz?",
+        options: [
+          "Close the browser",
+          "Return to the Annotation System and mark the episode as Done",
+          "Clock out immediately",
+          "Delete the episode"
+        ],
+        answer: 1,
+        why: "Saving in Dataviz and marking Done in the Annotation System are two separate steps."
+      },
+      {
+        q: "Where do you check your production and progress?",
+        options: ["Dashboard", "Time Log", "Login page", "MCAP viewer"],
+        answer: 0,
+        why: "The Dashboard is the progress view."
+      },
+      {
+        q: "When should an episode be marked Done?",
+        options: [
+          "Before starting the episode",
+          "After completing, reviewing and saving the annotations",
+          "When you open the MCAP",
+          "Before watching the episode"
+        ],
+        answer: 1,
+        why: "Done means done — finished, reviewed, and saved."
+      },
+      {
+        q: "Your shift is ending and you have four assigned episodes left. What do you do?",
+        options: [
+          "Work past your hours until the queue is empty",
+          "Manually move them to the Backlog",
+          "Clock out normally — the system returns them to the Backlog automatically",
+          "Mark them Done so the queue is clear"
+        ],
+        answer: 2,
+        why: "Clock out on time. The system moves unfinished episodes to the Backlog for freelancers to pick up."
+      }
+    ]
+  },
+  {
+    title: "Final practical assessment",
+    lede: "A live demonstration of the whole workflow, signed off by your trainer.",
+    unlock: {
+      role: "Trainer",
+      code: "1234",
+      statement: "This trainee has independently demonstrated the full annotation workflow from Clock In to Clock Out, including correct fail handling."
+    },
+    video: "",
+    body: `
+      <p>This is a live practical assessment, not a written test. Your trainer watches you perform the
+      real workflow and confirms you can do it <strong>without step-by-step guidance</strong>.</p>
+
+      <h3>What you'll demonstrate</h3>
+
+      <h4>1. Clock in</h4>
+      <p>Log in to the Annotation System, go to Time Log, click Clock In, refresh, and check your
+      assigned episodes in My Queue.</p>
+
+      <h4>2. Check your assignment</h4>
+      <p>Identify your assigned bot, date and episodes — and explain where you found them.</p>
+
+      <h4>3. Open Dataviz</h4>
+      <p>Log in, go to Episodes, find the assigned bot and date, open the episode, open the MCAP.</p>
+
+      <h4>4. Perform the annotation</h4>
+      <p>Independently: watch the MCAP, identify the Main Task and its Task Code, identify the Sub
+      Tasks, find the correct timestamps, and create the annotations following
+      <strong>Main → Sub → End</strong>. Complete at least one full task set.</p>
+
+      <h4>5. Demonstrate fail handling</h4>
+      <p>Your trainer will give you a failure scenario. You need to show you understand that a Fail
+      annotation doesn't go in the middle of a normal sequence — and demonstrate the real process:
+      remove the failed task's annotations, identify the task start, identify the failure point, apply
+      the Fail annotation.</p>
+
+      <h4>6. Save</h4>
+      <p>Review the annotations, check the timestamps and keywords, confirm the structure, click Save
+      Annotations.</p>
+
+      <h4>7. Mark the episode Done</h4>
+      <p>Return to the Annotation System, go to Episodes, find the episode, check Done — and explain
+      why it only happens after saving.</p>
+
+      <h4>8. Check progress</h4>
+      <p>Show where you find the Dashboard and your production figures.</p>
+
+      <h4>9. Clock out</h4>
+      <p>Go to Time Log, click Clock Out — and explain what happens to unfinished assigned episodes.</p>
+
+      <h3>The standard</h3>
+      <p>The whole chain, unaided: <strong>Clock In → Check Assignment → Open Dataviz → Open MCAP →
+      Identify Task → Annotate → Save → Mark Done → Check Progress → Clock Out</strong>.</p>`,
+    quiz: []
+  },
+    ]
+  }
+};
+
+// Active track — set once the trainee picks their role.
+let MODULES = [];
 
 /* ==================================================================
    ██  END OF CONFIG  ██  — nothing below here needs editing
@@ -1466,9 +2237,9 @@ let phase = 'read';   // 'read' = material screen, 'quiz' = check screen
 function load(){
   try{
     const r = JSON.parse(localStorage.getItem(KEY));
-    if(r && typeof r === 'object') return {name:r.name||'', done:Array.isArray(r.done)?r.done:[], finished:!!r.finished, signoff:r.signoff||null};
+    if(r && typeof r === 'object') return {name:r.name||'', track:r.track||'', done:Array.isArray(r.done)?r.done:[], finished:!!r.finished, signoff:r.signoff||null};
   }catch(e){}
-  return {name:'', done:[], finished:false, signoff:null};
+  return {name:'', track:'', done:[], finished:false, signoff:null};
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }
@@ -1498,7 +2269,7 @@ function paintMeter(){
 function paintRail(){
   const rail = document.getElementById('rail');
   const shell = document.querySelector('.shell');
-  if(!S.name){
+  if(!S.name || !S.track || !TRACKS[S.track]){
     rail.classList.add('hidden');
     if(shell) shell.classList.add('is-solo');
     return;
@@ -1525,8 +2296,8 @@ function paintRail(){
 /* ---------- screens ---------- */
 function screenStart(){
   return `<div class="card">
-    <div class="u eyebrow">Before you begin</div>
-    <h1>Teleoperator Onboarding</h1>
+    <div class="u eyebrow">Step 1 of 2</div>
+    <h1>Bitrobot Onboarding</h1>
     <p class="lede">${MODULES.length} modules, each ending in a short check. You can't move
     forward until the check is passed, and you can retry as many times as you need.</p>
     <label class="field">
@@ -1540,6 +2311,25 @@ function screenStart(){
     tab and come back over several days. If you switch to a different device or browser,
     or use a private window, you'll start again from module 01.</p>
   </div>`;
+}
+
+function screenRole(){
+  return `
+    <div class="card">
+      <div class="u eyebrow">Step 2 of 2</div>
+      <h1>Which role are you joining?</h1>
+      <p class="lede">Pick your track. Each one has its own modules and its own certificate.</p>
+      <div class="roles">
+        ${Object.keys(TRACKS).map(k => `
+          <button class="role" data-track="${k}">
+            <span class="u role__tag">${esc(TRACKS[k].label)}</span>
+            <span class="role__n">${TRACKS[k].modules.length} modules</span>
+            <span class="role__blurb">${esc(TRACKS[k].blurb)}</span>
+          </button>`).join('')}
+      </div>
+      <p class="note" style="margin-top:22px">Not sure which one you're on? Ask your trainer before
+      you start \u2014 switching later clears your progress.</p>
+    </div>`;
 }
 
 function screenRead(i){
@@ -1722,9 +2512,9 @@ function screenCert(){
 
       <p class="cert__intro">This is to certify that</p>
       <div class="cert__name">${esc(S.name)}</div>
-      <p class="cert__intro">has completed all ${MODULES.length} modules of field operations
-      onboarding, passed every comprehension check, and is qualified to operate as a</p>
-      <div class="cert__title">Teleoperator</div>
+      <p class="cert__intro">has completed all ${MODULES.length} modules of onboarding, passed every
+      comprehension check, and is qualified to work as a</p>
+      <div class="cert__title">${esc((TRACKS[S.track]||{}).cert || "")}</div>
 
       ${sg ? `<div class="cert__sig">
         <div class="cert__lab cert__lab--top">Confirmed by</div>
@@ -1870,10 +2660,24 @@ function render(){
     const go = () => {
       const val = document.getElementById('nameIn').value.trim();
       if(!val){ document.getElementById('nameIn').focus(); return; }
-      S.name = val; save(); openIdx = nextOpen(); render();
+      S.name = val; save(); render();
     };
     document.getElementById('startBtn').onclick = go;
     document.getElementById('nameIn').onkeydown = e => { if(e.key === 'Enter') go(); };
+    return;
+  }
+
+  if(!S.track || !TRACKS[S.track]){
+    stage.innerHTML = screenRole();
+    paintRail();
+    stage.querySelectorAll('.role').forEach(b => {
+      b.onclick = () => {
+        S.track = b.dataset.track;
+        S.done = []; S.finished = false; S.signoff = null;
+        save(); setTrack(); openIdx = 0; phase = 'read'; render();
+        window.scrollTo({top:0,behavior:'smooth'});
+      };
+    });
     return;
   }
 
@@ -1894,7 +2698,7 @@ function render(){
     document.getElementById('printBtn').onclick = () => window.print();
     document.getElementById('resetBtn').onclick = () => {
       if(confirm('This clears all progress on this device and starts again from module 01.')){
-        S = {name:'',done:[],finished:false,signoff:null}; save(); openIdx = 0; phase = 'read'; render();
+        S = {name:'',track:'',done:[],finished:false,signoff:null}; save(); openIdx = 0; phase = 'read'; render();
       }
     };
     return;
@@ -1927,6 +2731,15 @@ function render(){
   if(fwd) fwd.onclick = forward;
 }
 
+function setTrack(){
+  const t = TRACKS[S.track];
+  MODULES = t ? t.modules : [];
+  const sub = document.getElementById('markSub');
+  if(sub) sub.textContent = t ? '/ ' + t.label + ' Onboarding' : '/ Onboarding';
+  document.title = t ? 'Bitrobot \u2014 ' + t.label + ' Onboarding' : 'Bitrobot \u2014 Onboarding';
+}
+
+setTrack();
 openIdx = nextOpen();
 render();
 </script>
