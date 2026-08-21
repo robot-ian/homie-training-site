@@ -185,6 +185,12 @@ h1,h2,h3,.u{font-family:var(--display);letter-spacing:-.01em}
 .btn:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 .btn--ghost{background:none;color:var(--ink)}
 a.btn{display:inline-block;text-decoration:none;line-height:1.2}
+.btn--tiny{
+  font-size:10px;padding:5px 10px;font-family:var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;border-color:var(--rule);color:var(--ink-soft);
+}
+.btn--tiny:hover{border-color:var(--signal);color:var(--signal);opacity:1}
+@media(max-width:560px){.btn--tiny{display:none}}
 .btn--go{background:var(--clear);border-color:var(--clear);color:#fff}
 .btn[disabled]{opacity:.35;cursor:not-allowed}
 .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
@@ -305,6 +311,7 @@ a.btn{display:inline-block;text-decoration:none;line-height:1.2}
 <header class="masthead">
   <div class="masthead__in">
     <div class="mark">BITROBOT <span id="markSub">/ Onboarding</span></div>
+    <button class="btn btn--ghost btn--tiny hidden" id="switchBtn">Change role</button>
     <div class="meter">
       <span class="u meter__num" id="meterNum">0 / 0</span>
       <div class="meter__track"><div class="meter__fill" id="meterFill"></div></div>
@@ -2269,6 +2276,11 @@ function paintMeter(){
 function paintRail(){
   const rail = document.getElementById('rail');
   const shell = document.querySelector('.shell');
+  const sw = document.getElementById('switchBtn');
+  if(sw){
+    sw.classList.toggle('hidden', !(S.name && S.track && TRACKS[S.track]));
+    sw.onclick = switchTrack;
+  }
   if(!S.name || !S.track || !TRACKS[S.track]){
     rail.classList.add('hidden');
     if(shell) shell.classList.add('is-solo');
@@ -2327,7 +2339,10 @@ function screenRole(){
             <span class="role__blurb">${esc(TRACKS[k].blurb)}</span>
           </button>`).join('')}
       </div>
-      <p class="note" style="margin-top:22px">Not sure which one you're on? Ask your trainer before
+      <div class="btnrow" style="margin-top:24px">
+        <button class="btn btn--ghost" id="backToName">Back</button>
+      </div>
+      <p class="note" style="margin-top:18px">Not sure which one you're on? Ask your trainer before
       you start \u2014 switching later clears your progress.</p>
     </div>`;
 }
@@ -2670,6 +2685,8 @@ function render(){
   if(!S.track || !TRACKS[S.track]){
     stage.innerHTML = screenRole();
     paintRail();
+    const back = document.getElementById('backToName');
+    if(back) back.onclick = () => { S.name = ''; save(); render(); };
     stage.querySelectorAll('.role').forEach(b => {
       b.onclick = () => {
         S.track = b.dataset.track;
@@ -2729,6 +2746,18 @@ function render(){
   };
   const fwd = document.getElementById('fwdBtn');
   if(fwd) fwd.onclick = forward;
+}
+
+function switchTrack(){
+  const done = S.done.length;
+  const msg = done
+    ? 'Switching role clears your progress on this device \u2014 you have ' + done +
+      ' module' + (done > 1 ? 's' : '') + ' cleared. Continue?'
+    : 'Go back and pick a different role?';
+  if(!confirm(msg)) return;
+  S.track = ''; S.done = []; S.finished = false; S.signoff = null;
+  save(); setTrack(); openIdx = 0; phase = 'read'; render();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function setTrack(){
